@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conoce Nuestros Planes</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary: #2563eb; /* azul solicitado */
+      --primary-dark: #1f4fcc;
+      --success: #16a34a;  /* verde solicitado */
+      --muted: #6b7280;
+      --bg: #f0f4f8;
+      --card-radius: 14px;
+    }
+
+    html,body{
+      height:100%;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background-color: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #111827;
+      margin:0;
+    }
+
+    /* HERO */
+    header.hero {
+      background: linear-gradient(90deg, var(--primary), #06b6d4 70%);
+      color: #fff;
+      padding: 4.5rem 0 3.5rem;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+      text-align:center;
+    }
+    header.hero h1 { letter-spacing: -0.02em; font-weight:800; }
+    header.hero p { opacity: .95; font-weight:300; }
+
+    /* CARDS CAROUSEL */
+    .plans-carousel {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      padding-bottom: 1.25rem;
+      display:flex;
+      gap:1rem;
+    }
+    .plan-card {
+      min-width: 280px;
+      max-width: 340px;
+      border-radius: var(--card-radius);
+      transition: transform .22s ease, box-shadow .22s ease;
+      flex: 0 0 auto;
+    }
+    .plan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16,24,40,0.08); }
+
+    /* Modal backdrop & content */
+    .quote-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      padding: 1rem;
+      transition: opacity .24s ease;
+    }
+    .quote-modal-backdrop.show { display:flex; }
+    .quote-modal {
+      width: 100%;
+      max-width: 1424px; /* compacto ~800px */
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 30px 80px rgba(2,6,23,0.18);
+      max-height: 300vh;
+      overflow-y: auto;
+      transform: translateY(-8px);
+      opacity: 0;
+      transition: transform .28s ease, opacity .28s ease;
+    }
+    .quote-modal-backdrop.show .quote-modal { transform: translateY(0); opacity:1; }
+
+    /* Progress */
+    .progress-line { height: 7px; background: #eef2ff; border-radius: 8px; overflow:hidden; }
+    .progress-line > .fill { height:100%; background: var(--primary); width:0%; transition: width .45s ease; }
+
+    .step-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      background: #eef2ff;
+      color: var(--muted);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.05);
+    }
+    .step-circle.active { background: var(--primary); color: #fff; transform: scale(1.06); transition: transform .18s ease; }
+    .step-circle.done { background: var(--success); color: #fff; }
+
+    /* Card options */
+    .card-option {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      border: 2px solid transparent;
+      border-radius: .75rem;
+      padding: .9rem;
+    }
+    .card-option:hover { transform: translateY(-6px); box-shadow: 0 16px 36px rgba(2,6,23,0.06); }
+    .card-option.selected {
+      border-color: rgba(37,99,235,0.9);
+      background: #eff6ff;
+      box-shadow: 0 18px 36px rgba(37,99,235,0.07);
+    }
+    .card-option.disabled { opacity:.5; pointer-events:none; }
+
+    .section-header { border-left: 4px solid var(--primary); padding-left:.8rem; }
+
+    /* Small dialog */
+    .custom-dialog { background-color: #f8fafc; border: 1px solid #e6eef8; border-radius: 10px; }
+
+    /* helpers */
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* animations on buttons */
+    .btn-primary, .btn-success { transition: transform .12s ease, box-shadow .12s ease; }
+    .btn-primary:active, .btn-success:active { transform: translateY(1px); }
+
+    /* focus outline (accessible) */
+    :focus { outline: 3px solid rgba(37,99,235,0.15); outline-offset: 2px; }
+
+    @media (max-width:575px){
+      .quote-modal { padding: 1rem; margin: .5rem; max-width: 100%; border-radius: 10px; }
+      .plan-card { min-width: 230px; }
+    }
+    .text-muted{
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modal multi-step (accessible) -->
+  <div id="quote-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
+    <div id="quote-modal" class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+      <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+        <div>
+          <h2 id="modal-title" class="h4 fw-bold" style="color:var(--primary);">Cotiza tu Plan</h2>
+          <small id="modal-sub" class="text-muted">Sigue los pasos para obtener tu cotización</small>
+        </div>
+        <button type="button" id="modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar">✕</button>
+      </div>
+
+      <!-- Progress -->
+      <div class="mb-3">
+        <div class="position-relative mb-2">
+          <div class="progress-line"><div id="progress-bar-fill" class="fill"></div></div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center" style="gap:.6rem;">
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="1">1</div>
+            <div class="small text-muted mt-1">Paso 1</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="2">2</div>
+            <div class="small text-muted mt-1">Paso 2</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="3">3</div>
+            <div class="small text-muted mt-1">Paso 3</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="4">4</div>
+            <div class="small text-muted mt-1">Paso 4</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="5">5</div>
+            <div class="small text-muted mt-1">Paso 5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steps content -->
+      <div id="step-1" class="step-content">
+        <h3 class="h6 fw-bold mb-3"></h3>
+        <form id="step-1-form" onsubmit="event.preventDefault(); nextStep()">
+          <div class="row g-2">
+            <div class="col-12 col-md-8">
+              <label for="nombre" class="form-label small fw-semibold">Nombres Completos</label>
+              <input id="nombre" type="text" class="form-control" placeholder="Nombres Completos" required autocomplete="off">
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="edad" class="form-label small fw-semibold">Edad</label>
+              <input id="edad" type="number" class="form-control" placeholder="edad" required  autocomplete="off">
+            </div>
+            
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold">Siguiente</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="step-2" class="step-content d-none">
+        <h3 class="h6 fw-bold mb-3"></h3>
+
+        <div class="mb-3">
+          <h6 class="section-header fw-bold">1. Atenciones Ambulatorias</h6>
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-3">
+              <div id="A1" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between">
+                  <div>Cuando te atiendas Ambulatoriamente <br>Por cada consulta médica solo pagarás:</div>
+                  
+                </div>
+                <div class="small text-muted mt-1">Y por medicamentos, exámenes u otros servicios solo asumirás este porcentaje:</div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-3 text-center">
+              <div id="A1" class="card-option border bg-white" onclick="selectAmbulatoria('A1')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center">
+                  <div><strong class="text-center">Opción A1</strong><div class="small text-center"><span class="fw-bold">S/ 80</span></div></div>
+                  
+                </div>
+                <div class="small text-muted mt-1">30%</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="A2" class="card-option border bg-white" onclick="selectAmbulatoria('A2')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center">
+                  <div><strong class="text-center">Opción A2</strong><div class="small text-center"><span class="fw-bold">S/ 80</span></div></div>
+                  
+                </div>
+                <div align="center" class="small text-muted mt-1">20%</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="A3" class="card-option border bg-white" onclick="selectAmbulatoria('A3')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center">
+                  <div><strong class="text-center">Opción A3</strong><div class="small text-center"><span class="fw-bold">S/ 80</span></div></div>
+                  
+                </div>
+                <div align="center" class="small text-muted mt-1">10%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="hospitalarias-section" class="mb-3 opacity-50">
+          <h6 class="section-header fw-bold">2. Atenciones Hospitalarias
+            <span id="hospitalarias-status" class="badge bg-danger text-white ms-2">PENDIENTE (Selecciona Ambulatorias)</span>
+          </h6>
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-3">
+              <div id="A1" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between">
+                  <div>Cuando necesites hospitalizarte: <br> Asumirás este porcentaje sobre el total de los gastos médicos que se generen
+</div>
+                  
+                </div>
+                <div class="small text-muted mt-1">El valor mínimo por asumir no debe ser inferior a S/</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              
+              <div id="H1" class="card-option border bg-white disabled" onclick="selectHospitalaria('H1')" role="button" tabindex="-1" aria-pressed="false">
+                <div class="d-flex justify-content-center"><strong>Opción H1</strong></div>
+                <div class="small text-muted mt-1">30%</div>
+                <div align="center" class="small text-muted mt-1">S/. 600</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="H2" class="card-option border bg-white disabled" onclick="selectHospitalaria('H2')" role="button" tabindex="-1" aria-pressed="false">
+                <strong>Opción H2</strong>
+                <div class="small text-muted mt-1">20%</div>
+                <div align="center" class="small text-muted mt-1">S/. 1000</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="H3" class="card-option border bg-white disabled" onclick="selectHospitalaria('H3')" role="button" tabindex="-1" aria-pressed="false">
+                <strong>Opción H3</strong>
+                <div class="small text-muted mt-1">10%</div>
+                <div align="center" class="small text-muted mt-1">S/. 1500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-link text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 3)</button>
+        </div>
+      </div>
+
+      <div id="step-3" class="step-content d-none">
+        <h3 class="h6 fw-bold mb-3"></h3>
+
+        <div class="mb-3 p-2 rounded-3 bg-light border">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div id="selected-plan-name" class="fw-bold">Asistencia Médica por Emergencia Accidental Ambulatoria</div>
+              <small class="text-muted">100% de cobertura en caso de emergencias por accidentes atendidos ambulatoriamente durante las primeras 48 horas de ocurrido.</small>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="mb-3 p-2 rounded-3 bg-light border">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div id="selected-plan-name" class="fw-bold">Atención Médica a Distancia</div>
+              <small class="text-muted">Tendrás a tu disposición atención médica sin moverte de tu casa u oficina para cualquier enfermedad o dolencia de baja complejidad.</small>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="mb-3 p-2 rounded-3 bg-light border">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div id="selected-plan-name" class="fw-bold">Atención por Maternidad</div>
+              <small class="text-muted">Inicio de gestación a partir de transcurridos los primeros 12 meses de aseguramiento ya contarás con beneficios para la atención y gastos por maternidad.</small>
+            </div>
+          </div>
+        </div>
+
+       
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-link text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 4)</button>
+        </div>
+      </div>
+
+      <div id="step-4" class="step-content d-none">
+        <h3 class="h6 fw-bold mb-3"></h3>
+
+        <div class="mb-3 p-2 rounded-3 bg-light border">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">Plan Seleccionado</small>
+              <div id="selected-plan-name" class="fw-bold">Plan Flexible</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">Prima Calculada</small>
+              <div id="titular-prima" class="h6 fw-bold" style="color:var(--primary)">S/. 135</div>
+            </div>
+          </div>
+        </div>
+         <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-title fw-bold">Datos del Titular</h6>
+            <div class="row g-2 align-items-end">
+              <div class="col-6 col-md-3">
+                <label class="form-label small">Edad del Titular</label>
+                <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
+              </div>
+              <div class="col-6 col-md-3 text-md-start text-sm-end">
+                <label class="form-label small d-block">&nbsp;</label>
+                <div id="titular-prima-display" class="fw-semibold">S/. 135</div>
+              </div>
+              <button class="btn btn-primary">Ver pla</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center p-2 rounded-3 bg-light summary-box">
+          <div>
+            <div class="small text-muted">Total en la Cotización</div>
+            <div class="fw-bold">Afiliados: <span id="summary-total-affiliates">1</span></div>
+          </div>
+          <div class="text-end">
+            <div class="small text-muted">Aporte Total Mensual</div>
+            <div id="summary-total-prima" class="h5 fw-bold" style="color:var(--primary)">S/. 150</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-link text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 4)</button>
+        </div>
+      </div>
+
+      <div id="step-5" class="step-content d-none">
+        <h3 class="h6 fw-bold mb-3"></h3>
+
+        <div class="mb-3 p-2 rounded-3 bg-light border">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">Plan Seleccionado</small>
+              <div id="selected-plan-name" class="fw-bold">Plan Flexible</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">Prima Calculada</small>
+              <div id="titular-prima" class="h6 fw-bold" style="color:var(--primary)">S/. 135</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-title fw-bold">Datos del Titular</h6>
+            <div class="row g-2 align-items-end">
+              <div class="col-6 col-md-3">
+                <label class="form-label small">Edad del Titular</label>
+                <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
+              </div>
+              <div class="col-6 col-md-3 text-md-start text-sm-end">
+                <label class="form-label small d-block">&nbsp;</label>
+                <div id="titular-prima-display" class="fw-semibold">S/. 135</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-title fw-bold">Afiliados Adicionales</h6>
+            <div id="afiliados-list" class="mb-2"></div>
+            <button class="btn btn-primary w-100" onclick="addAffiliate()">+ Agregar Afiliado</button>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-link text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-success" onclick="initiateAffiliationProcess()">Confirmar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="plans-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
+    <div id="plans-modal" class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="plans-modal-title" tabindex="-1">
+      <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+        <div>
+          <h2 id="plans-modal-title" class="h5 fw-bold" style="color:var(--primary);">Planes disponibles</h2>
+          <small class="text-muted">Selecciona un plan para ver detalles</small>
+        </div>
+        <button type="button" id="plans-modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar">✕</button>
+      </div>
+      <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 1</h6><div class="text-muted small">Detalle breve del plan 1</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 2</h6><div class="text-muted small">Detalle breve del plan 2</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 3</h6><div class="text-muted small">Detalle breve del plan 3</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 4</h6><div class="text-muted small">Detalle breve del plan 4</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 5</h6><div class="text-muted small">Detalle breve del plan 5</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 6</h6><div class="text-muted small">Detalle breve del plan 6</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 7</h6><div class="text-muted small">Detalle breve del plan 7</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 8</h6><div class="text-muted small">Detalle breve del plan 8</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 9</h6><div class="text-muted small">Detalle breve del plan 9</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100"><div class="card-body"><h6 class="fw-bold mb-1">Plan 10</h6><div class="text-muted small">Detalle breve del plan 10</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="hero mb-4">
+    <div class="container">
+      <h1 class="display-5 fw-extrabold mb-2">Conoce nuestros planes</h1>
+      <p class="lead mb-3">La mejor manera de proteger tu salud, ahora a tu alcance</p>
+      <div>
+        <button id="open-plans" class="btn btn-light btn-lg text-primary fw-bold" onclick="openModal()">Ver Planes Ahora</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Logos -->
+  <section class="container mb-4">
+    <div class="rounded-3 bg-white p-3 d-flex justify-content-center gap-4 align-items-center shadow-sm">
+      <div class="text-primary fw-bold">🏥 <span class="fw-normal text-muted">Hospital Sur</span></div>
+      <div class="d-none d-sm-block text-primary fw-bold">💙 <span class="fw-normal text-muted">Clínica Central</span></div>
+      <div class="text-success fw-bold">⚕️ <span class="fw-normal text-muted">Centro Norte</span></div>
+    </div>
+  </section>
+
+  <!-- PLANS CAROUSEL -->
+  <main class="container mb-5" style="max-width: 1200px;">
+    <div id="plans-carousel" class="plans-carousel no-scrollbar mb-3" aria-hidden="false">
+      <!-- card 1 -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100" >
+          <div ><p align="center" class="text-muted"><img src="stella.JPG" height="40" width="100"></p>
+            <h5 align="center" class="card-title fw-bold">Clinica Stella Maris</h5>
+            <div class="p-3 rounded-3 bg-white border mb-3">
+              <p class="text-muted">▶ Beneficio Máximo Anual S/. 200,000</p>
+              <p class="text-muted">▶ Emergencias Accidentales al 100%</p>
+              <p class="text-muted">▶ Medico a domicilio</p>
+              <p class="text-muted">▶ Atencion unicamente en Clinica Stella Maris</p>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100" onclick="openModal()">Cotiza Aquí</button>
+            -
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 2 popular -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100">
+          <div>
+            <p align="center" class="text-muted"><img src="teza.JPG" height="40" width="100"></p>
+            <h5 align="center" class="card-title fw-bold">Clinica Tezza</h5>
+                <div class="p-3 rounded-3 bg-white border mb-3">
+                    <p class="text-muted">▶ Beneficio Máximo Anual S/. 200,000</p>
+                    <p class="text-muted">▶ Emergencias Accidentales al 100%</p>
+                    <p class="text-muted">▶ Medico a domicilio</p>
+                    <p class="text-muted">▶ Atencion unicamente en Clinica Tezza</p>
+              </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100" onclick="openModal()">Cotiza Aquí</button>
+            -
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 3 -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100">
+          <div>
+            <p align="center" class="text-muted"><img src="kubro.JPG" height="40" width="100"></p>
+            <h5 align="center" class="card-title fw-bold">Kubro 1</h5>
+            <div class="p-3 rounded-3 bg-white border mb-3">
+                <p class="text-muted">▶ Beneficio Máximo Anual S/. 200,000</p>
+                    <p class="text-muted">▶ Emergencias Accidentales al 100%</p>
+                    <p class="text-muted">▶ Medico a domicilio</p>
+                    <p class="text-muted">▶ Atencion unicamente en Kubro</p>
+              </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100" onclick="openModal()">Cotiza Aquí</button>
+            -
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- controls desktop -->
+    <div class="d-none d-md-flex justify-content-between position-relative mt-2">
+      <button class="btn btn-light shadow-sm" onclick="scrollCarousel('left')" aria-label="Scroll left">◀</button>
+      <button class="btn btn-light shadow-sm" onclick="scrollCarousel('right')" aria-label="Scroll right">▶</button>
+    </div>
+  </main>
+
+  <footer class="text-center py-4 bg-white border-top">
+    <div class="container">
+      <div>&copy; 2025 Seguros de Salud. Todos los derechos reservados.</div>
+      <div id="user-id-display" class="small text-muted mt-1">ID de Usuario: (Local)</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS (bundle includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ---------- Estado ---------- */
+    let currentStep = 1;
+    const totalSteps = 5;
+    let affiliates = [{ id: 1, age: 18, prima: 99 }];
+    let selectedPlanName = 'Plan Flexible';
+    let titularAge = 33;
+    let titularPrimaValue = 135;
+    let selectedAmbulatoria = null;
+    let selectedHospitalaria = null;
+
+    /* ---------- Utils ---------- */
+    function getPrimaByAge(age) {
+      age = parseInt(age);
+      if (isNaN(age)) return 0;
+      if (age < 18) return 50;
+      if (age < 30) return 135;
+      if (age < 50) return 150;
+      if (age < 65) return 200;
+      return 300;
+    }
+    function formatCurrency(amount) {
+      const n = Number(amount) || 0;
+      return `S/. ${n.toFixed(0)}`;
+    }
+
+    /* ---------- Modal open/close + focus trap ---------- */
+    const backdrop = document.getElementById('quote-modal-backdrop');
+    const modalEl = document.getElementById('quote-modal');
+    const btnClose = document.getElementById('modal-close');
+    let lastFocusedElement = null;
+
+    function openModal(){
+      lastFocusedElement = document.activeElement;
+      backdrop.classList.add('show');
+      backdrop.setAttribute('aria-hidden','false');
+      modalEl.focus();
+      currentStep = 1;
+      updateProgress();
+      trapFocusStart();
+    }
+
+    function closeModal(){
+      backdrop.classList.remove('show');
+      backdrop.setAttribute('aria-hidden','true');
+      releaseFocusTrap();
+      if (lastFocusedElement) lastFocusedElement.focus();
+    }
+
+    // Close when clicking backdrop but not when clicking modal
+    backdrop.addEventListener('mousedown', (e) => {
+      if (e.target === backdrop) {
+        closeModal();
+      }
+    });
+
+    btnClose.addEventListener('click', closeModal);
+
+    function openModal2(){
+      try { lastFocusedElement2 = document.activeElement; } catch(e) {}
+      const bd = document.getElementById('plans-modal-backdrop');
+      const el = document.getElementById('plans-modal');
+      if (!bd || !el) return;
+      bd.classList.add('show');
+      bd.setAttribute('aria-hidden','false');
+      el.focus();
+    }
+
+    function closeModal2(){
+      const bd = document.getElementById('plans-modal-backdrop');
+      const el = document.getElementById('plans-modal');
+      if (!bd || !el) return;
+      bd.classList.remove('show');
+      bd.setAttribute('aria-hidden','true');
+      if (lastFocusedElement2) try { lastFocusedElement2.focus(); } catch(e) {}
+    }
+
+    // Close with Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const quoteShown = backdrop.classList.contains('show');
+        const plansBackdrop = document.getElementById('plans-modal-backdrop');
+        const plansShown = plansBackdrop && plansBackdrop.classList.contains('show');
+        if (plansShown) {
+          closeModal2();
+        } else if (quoteShown) {
+          closeModal();
+        }
+      }
+    });
+
+    /* Focus trap implementation */
+    let focusableElements = [];
+    let firstFocusable = null;
+    let lastFocusable = null;
+    let focusTrapHandler = null;
+
+    function updateFocusable() {
+      focusableElements = modalEl.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      focusableElements = Array.prototype.slice.call(focusableElements).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length);
+      firstFocusable = focusableElements[0] || modalEl;
+      lastFocusable = focusableElements[focusableElements.length -1] || modalEl;
+    }
+
+    function trapFocusStart() {
+      updateFocusable();
+      if (firstFocusable) firstFocusable.focus();
+      focusTrapHandler = function(e){
+        if (e.key !== 'Tab') return;
+        updateFocusable();
+        if (focusableElements.length === 0) {
+          e.preventDefault(); return;
+        }
+        if (e.shiftKey) { // Shift + Tab
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else { // Tab
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      };
+      modalEl.addEventListener('keydown', focusTrapHandler);
+    }
+
+    function releaseFocusTrap() {
+      if (focusTrapHandler) modalEl.removeEventListener('keydown', focusTrapHandler);
+      focusTrapHandler = null;
+    }
+
+    /* ---------- Steps / Progress ---------- */
+    function updateProgress() {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      progressFill.style.width = progress + '%';
+
+      document.querySelectorAll('.step-circle').forEach(circle => {
+        const step = parseInt(circle.getAttribute('data-step'), 10);
+        circle.classList.remove('active','done');
+        if (step === currentStep) circle.classList.add('active');
+        else if (step < currentStep) circle.classList.add('done');
+      });
+
+      document.querySelectorAll('.step-content').forEach(content => content.classList.add('d-none'));
+      const currentContent = document.querySelector(`#step-${currentStep}`);
+      if (currentContent) currentContent.classList.remove('d-none');
+
+      // actions on steps
+      if (currentStep === 3) {
+        renderAffiliates();
+        calculateTotalPrima();
+      }
+      if (currentStep === 4) {
+        updateNextButtonState();
+      }
+      if (currentStep === 5) {
+        renderStep5Summary();
+      }
+
+      // update title for screen readers
+      const stepNameMap = {
+        1: "Bríndanos tu nombre y Edad",
+        2: "Empieza por configurar tu propio Plan de Salud",
+        3: "Además de las opciones escogidas cuentas con todos estos beneﬁcios.",
+        4: "Este es el resumen de tu cotización",
+        5: "Agregar dependientes"
+      };
+      document.getElementById('modal-title').textContent = stepNameMap[currentStep] || 'Cotiza tu Plan';
+    }
+
+    function nextStep(){
+      // validate step 1 form
+      if (currentStep === 1) {
+        const form = document.getElementById('step-1-form');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+      }
+
+      if (currentStep === 4) {
+        if (!selectedAmbulatoria || !selectedHospitalaria) {
+          showDialogModal("Advertencia", "Debes seleccionar una opción de Cobertura Ambulatoria y una de Hospitalaria para continuar.", [
+            { text: 'Aceptar', actionName: 'closeDialogModal' }
+          ]);
+          return;
+        }
+      }
+
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateProgress();
+        modalEl.scrollTop = 0;
+        updateFocusable();
+      }
+    }
+
+    function prevStep(targetStep = null) {
+      if (targetStep) currentStep = targetStep;
+      else if (currentStep > 1) currentStep--;
+      updateProgress();
+    }
+
+    /* ---------- Plans ---------- */
+    function selectPlan(planName){
+      selectedPlanName = planName;
+      const planDisplay = document.getElementById('selected-plan-name');
+      if (planDisplay) planDisplay.textContent = planName;
+      nextStep();
+    }
+
+    /* ---------- Affiliates ---------- */
+    function renderAffiliates(){
+      const list = document.getElementById('afiliados-list');
+      if (!list) return;
+      if (affiliates.length === 0) {
+        const defaultAge = 18;
+        affiliates.push({ id:1, age:defaultAge, prima: getPrimaByAge(defaultAge) });
+      }
+      list.innerHTML = '';
+      affiliates.forEach((a, idx) => {
+        const prima = a.prima || getPrimaByAge(a.age);
+        const container = document.createElement('div');
+        container.className = 'd-flex justify-content-between align-items-center mb-2 p-2 rounded-3 border bg-white';
+        container.id = `afiliado-${a.id}`;
+        container.innerHTML = `
+          <div class="d-flex align-items-center gap-2">
+            <div class="small text-muted">Afiliado ${idx+1}:</div>
+            <input type="number" min="0" max="99" value="${a.age}" class="form-control form-control-sm" style="width:84px"
+              onchange="updateAffiliateAge(this.value, ${a.id})" />
+            <div class="small text-muted ms-2">años</div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="fw-bold" style="color:var(--primary)">${formatCurrency(prima)}</div>
+            <button class="btn btn-link text-danger p-0" onclick="removeAffiliate(${a.id})" aria-label="Eliminar afiliado ${idx+1}">
+              ✖
+            </button>
+          </div>
+        `;
+        list.appendChild(container);
+      });
+    }
+
+    function addAffiliate(){
+      const newId = affiliates.length > 0 ? Math.max(...affiliates.map(x=>x.id)) + 1 : 1;
+      const defaultAge = 30;
+      affiliates.push({ id: newId, age: defaultAge, prima: getPrimaByAge(defaultAge) });
+      renderAffiliates();
+      calculateTotalPrima();
+      updateFocusable();
+    }
+
+    function removeAffiliate(id){
+      affiliates = affiliates.filter(x => x.id !== id);
+      renderAffiliates();
+      calculateTotalPrima();
+      updateFocusable();
+    }
+
+    function updateAffiliateAge(newAge, id){
+      const idx = affiliates.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        affiliates[idx].age = parseInt(newAge) || 0;
+        affiliates[idx].prima = getPrimaByAge(newAge);
+      }
+      renderAffiliates();
+      calculateTotalPrima();
+    }
+
+    function calculateTotalPrima(){
+      const titularAgeInput = document.getElementById('titular-age');
+      titularAge = parseInt(titularAgeInput?.value || 33);
+      titularPrimaValue = getPrimaByAge(titularAge) || 135;
+      const titularPrimaSpan = document.getElementById('titular-prima');
+      if (titularPrimaSpan) titularPrimaSpan.textContent = formatCurrency(titularPrimaValue);
+      const titularPrimaDisplay = document.getElementById('titular-prima-display');
+      if (titularPrimaDisplay) titularPrimaDisplay.textContent = formatCurrency(titularPrimaValue);
+
+      let totalPrima = titularPrimaValue;
+      affiliates.forEach(a => totalPrima += (a.prima || getPrimaByAge(a.age)));
+      const totalPrimaDisplay = document.getElementById('total-prima-display');
+      if (totalPrimaDisplay) totalPrimaDisplay.textContent = formatCurrency(totalPrima);
+      return totalPrima;
+    }
+
+    /* ---------- Coberturas ---------- */
+    function selectAmbulatoria(id) {
+      ['A1','A2','A3'].forEach(x => {
+        const el = document.getElementById(x);
+        if (el) el.classList.remove('selected');
+      });
+      const picked = document.getElementById(id);
+      if (picked) picked.classList.add('selected');
+      selectedAmbulatoria = id;
+      enableHospitalarias();
+      updateNextButtonState();
+      updateFocusable();
+    }
+
+    function enableHospitalarias(){
+      const section = document.getElementById('hospitalarias-section');
+      const status = document.getElementById('hospitalarias-status');
+      if (section) section.classList.remove('opacity-50');
+      if (status) {
+        status.textContent = '';//'¡Ya puedes configurar!';
+        status.className = 'badge bg-success text-white ms-2';
+      }
+      ['H1','H2','H3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('disabled');
+          el.setAttribute('tabindex','0');
+        }
+      });
+    }
+
+    function selectHospitalaria(id){
+      if (!selectedAmbulatoria) return;
+      ['H1','H2','H3'].forEach(x => {
+        const el = document.getElementById(x);
+        if (el) el.classList.remove('selected');
+      });
+      const picked = document.getElementById(id);
+      if (picked) picked.classList.add('selected');
+      selectedHospitalaria = id;
+      updateNextButtonState();
+      updateFocusable();
+    }
+
+    function updateNextButtonState() {
+      const btn = document.getElementById('btn-step-4-next');
+      if (!btn) return;
+      if (currentStep === 4) {
+        btn.disabled = !(selectedAmbulatoria && selectedHospitalaria);
+      }
+    }
+
+    /* ---------- Summary step (5) ---------- */
+    function renderStep5Summary() {
+      const summaryContent = document.getElementById('summary-content');
+      if (!summaryContent) return;
+      const planTitle = `Clínica Stella Maris - ${selectedPlanName} ${selectedAmbulatoria ? '('+selectedAmbulatoria+ (selectedHospitalaria?selectedHospitalaria:'') +')':''}`;
+
+      let html = `
+        <div class="card mb-2"><div class="card-body">
+          <h6 class="fw-bold" style="color:var(--primary)">${planTitle}</h6>
+          <p class="small text-muted mb-0">Resumen del plan y coberturas seleccionadas.</p>
+        </div></div>
+
+        <div class="card mb-2"><div class="card-body">
+          <h6 class="fw-bold">Titular</h6>
+          <div class="row">
+            <div class="col-6"><small class="text-muted">Edad</small><div class="fw-bold">${titularAge} años</div></div>
+            <div class="col-6 text-end"><small class="text-muted">Prima Mensual</small><div class="fw-bold text-success">${formatCurrency(titularPrimaValue)}</div></div>
+          </div>
+          <div class="mt-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="prevStep(2)">Cambiar plan</button>
+            <button class="btn btn-sm btn-primary ms-2" onclick="showDialogModal('Ver Plan', 'Aquí se abriría el documento o PDF del plan completo.', [{text:'Aceptar', actionName:'closeDialogModal'}])">Ver plan</button>
+          </div>
+        </div></div>
+      `;
+
+      if (affiliates.length > 0) {
+        html += `<div class="card mb-2"><div class="card-body"><h6 class="fw-bold">Afiliados Adicionales (${affiliates.length})</h6>`;
+        affiliates.forEach((a,i) => {
+          html += `<div class="p-2 rounded-3 bg-light mb-1">
+            <div class="row">
+              <div class="col-6"><small class="text-muted">Edad</small><div class="fw-bold">${a.age} años</div></div>
+              <div class="col-6 text-end"><small class="text-muted">Prima</small><div class="fw-bold text-success">${formatCurrency(a.prima)}</div></div>
+            </div>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+
+      summaryContent.innerHTML = html;
+      document.getElementById('summary-total-affiliates').textContent = affiliates.length;
+      document.getElementById('summary-total-prima').textContent = formatCurrency(calculateTotalPrima());
+      updateFocusable();
+    }
+
+    /* ---------- Small dialog (reusable) ---------- */
+    function closeDialogModal(){
+      const ex = document.getElementById('custom-dialog-modal');
+      if (ex) ex.remove();
+    }
+
+    function showDialogModal(title, message, buttons = [{text:'Aceptar', actionName:'closeDialogModal'}]) {
+      closeDialogModal();
+      const wrapper = document.createElement('div');
+      wrapper.id = 'custom-dialog-modal';
+      wrapper.className = 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center';
+      wrapper.style.zIndex = 1060;
+      wrapper.innerHTML = `
+        <div style="width:100%;max-width:440px;padding:1rem">
+          <div class="card custom-dialog shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div><h5 class="card-title mb-1">${title}</h5></div>
+                <button type="button" class="btn-close" onclick="closeDialogModal()" aria-label="Cerrar"></button>
+              </div>
+              <p class="text-muted">${message}</p>
+              <div class="d-flex gap-2 mt-2">
+                ${buttons.map((btn, idx) => {
+                  const cls = btn.class || (idx===0 ? 'btn btn-primary' : 'btn btn-secondary');
+                  const actionName = btn.actionName || 'closeDialogModal';
+                  const actionParam = btn.actionParam ? `'${btn.actionParam}'` : '';
+                  return `<button class="${cls} flex-fill" onclick="closeDialogModal(); window['${actionName}'](${actionParam});">${btn.text}</button>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrapper);
+    }
+
+    /* ---------- Confirmation flow (step 5) ---------- */
+    function initiateAffiliationProcess() {
+      showDialogModal("Confirmación de Plan", "¿Deseas afiliarte al plan de salud cotizado?", [
+        { text:'Sí', class:'btn btn-success', actionName:'showPaymentGateway' },
+        { text:'No', class:'btn btn-outline-secondary', actionName:'showSaveProspectConfirmation' }
+      ]);
+    }
+
+    function showPaymentGateway() {
+      showDialogModal("Pasarela de pago", "Procesando la Pasarela de Pago... Serás redirigido al portal de firma de contrato.", [
+        { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+      ]);
+    }
+
+    function showSaveProspectConfirmation() {
+      showDialogModal("Guardar Cotización", "¿Desea guardar prospección para continuar más tarde?", [
+        { text:'Sí', class:'btn btn-primary', actionName:'finalizeProspect', actionParam:'true' },
+        { text:'No', class:'btn btn-secondary', actionName:'finalizeProspect', actionParam:'false' }
+      ]);
+    }
+
+    function finalizeProspect(save) {
+      if (save === 'true') {
+        showDialogModal("Prospección Guardada", "Prospección guardada exitosamente. Recibirás un correo con el resumen.", [
+          { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+        ]);
+      } else {
+        showDialogModal("Prospección Descartada", "Prospección descartada. Puedes cotizar de nuevo cuando desees.", [
+          { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+        ]);
+      }
+    }
+
+    /* ---------- Carousel helpers ---------- */
+    function scrollCarousel(dir) {
+      const el = document.getElementById('plans-carousel');
+      if (!el) return;
+      const amount = el.clientWidth * 0.6;
+      if (dir === 'left') el.scrollBy({ left: -amount, behavior: 'smooth' });
+      else el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    /* Expose functions used inline */
+    window.openModal = openModal;
+    window.toggleModal = openModal;
+    window.nextStep = nextStep;
+    window.prevStep = prevStep;
+    window.selectPlan = selectPlan;
+    window.addAffiliate = addAffiliate;
+    window.removeAffiliate = removeAffiliate;
+    window.updateAffiliateAge = updateAffiliateAge;
+    window.calculateTotalPrima = calculateTotalPrima;
+    window.selectAmbulatoria = selectAmbulatoria;
+    window.selectHospitalaria = selectHospitalaria;
+    window.initiateAffiliationProcess = initiateAffiliationProcess;
+    window.showPaymentGateway = showPaymentGateway;
+    window.showSaveProspectConfirmation = showSaveProspectConfirmation;
+    window.finalizeProspect = finalizeProspect;
+    window.closeDialogModal = closeDialogModal;
+    window.showDialogModal = showDialogModal;
+    window.scrollCarousel = scrollCarousel;
+    window.openModal2 = openModal2;
+    window.closeModal2 = closeModal2;
+
+    /* ---------- Init ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      updateProgress();
+      renderAffiliates();
+      calculateTotalPrima();
+
+      // Accessibility: when modal opens we must set focus trap; ensure close button accessible
+      document.getElementById('open-plans').addEventListener('click', openModal);
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      const plansCloseBtn = document.getElementById('plans-modal-close');
+      if (plansCloseBtn) plansCloseBtn.addEventListener('click', closeModal2);
+      const plansBackdropEl = document.getElementById('plans-modal-backdrop');
+      if (plansBackdropEl) plansBackdropEl.addEventListener('mousedown', (e)=>{ if (e.target === plansBackdropEl) closeModal2(); });
+
+      // Keyboard accessible card-option clickable via Enter/Space
+      document.querySelectorAll('.card-option[role="button"]').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
