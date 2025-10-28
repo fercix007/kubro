@@ -656,13 +656,128 @@
     </div>
   </footer>
 
-  <!-- New Payment Modal -->
+  <!-- MODAL DE ACREDITACION Y PAGO -->
+   <style>
+    /* Compactar fuente y altura SOLO dentro de los dos paneles */
+#datos_contratante_1 .form-label,
+#datos_contratante_2 .form-label {
+  font-size: 0.75rem; /* ~12px */
+}
+
+#datos_contratante_1 .form-control,
+#datos_contratante_1 .form-select,
+#datos_contratante_2 .form-control,
+#datos_contratante_2 .form-select {
+  font-size: 0.875rem;          /* ~14px */
+  padding: 0.25rem 0.5rem;       /* menos alto */
+  height: calc(1.5em + 0.5rem + 2px); /* mantener proporción compacta */
+}
+
+#datos_contratante_1 .form-check-label,
+#datos_contratante_2 .form-check-label {
+  font-size: 0.8125rem; /* ~13px */
+}
+
+#datos_contratante_1 .h6,
+#datos_contratante_2 .h6 {
+  font-size: 0.9rem; /* compactar subtítulos si aplica */
+}
+
+/* Switch encendido en verde (afecta solo a switches con role="switch") */
+.form-check-input[role="switch"]:checked {
+  background-color: var(--success); /* ya definido como #16a34a */
+  border-color: var(--success);
+}
+
+/* Opcional: aro de enfoque coherente en verde */
+.form-check-input[role="switch"]:focus {
+  box-shadow: 0 0 0 .25rem rgba(22, 163, 74, .25);
+}
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.form-check-input[type="checkbox"][role="switch"]');
+
+  switches.forEach(sw => {
+    const wrapper = sw.closest('.bg-danger, .bg-success, .bg-warning');
+    if (!wrapper) return;
+
+    const hadWarning = wrapper.classList.contains('bg-warning');
+
+    const updateWrapperClass = () => {
+      if (sw.checked) {
+        wrapper.classList.add('bg-success');
+        wrapper.classList.remove('bg-danger', 'bg-warning');
+      } else {
+        wrapper.classList.remove('bg-success');
+        // restaurar estado original
+        if (hadWarning) {
+          wrapper.classList.add('bg-warning');
+          wrapper.classList.remove('bg-danger');
+        } else {
+          wrapper.classList.add('bg-danger');
+          wrapper.classList.remove('bg-warning');
+        }
+      }
+    };
+
+    sw.addEventListener('change', updateWrapperClass);
+    updateWrapperClass(); // sincroniza estado inicial
+  });
+});
+
+function autocompleta(){
+    document.getElementById("apellido_paterno").value = "TORRE";
+    document.getElementById("apellido_materno").value = "TAMAYO";
+    document.getElementById("nombres").value = "JUAN CARLOS";
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.auto_direccion');
+
+  switches.forEach(sw => {
+    sw.addEventListener('change', () => {
+      const algunoEncendido = Array.from(switches).some(s => s.checked);
+
+      if (algunoEncendido) {
+        document.getElementById("distrito").value = "1";
+        document.getElementById("provincia").value = "1";
+        document.getElementById("departamento").value = "1";
+        document.getElementById("tipo-via").value = "2";
+        document.getElementById("nombre-via").value = "AV. LOS ANDES";
+        document.getElementById("numero-via").value = "2025";
+        document.getElementById("int-dpto").value = "-";
+        document.getElementById("sector").value = "1";
+        document.getElementById("nombre-sector").value = "SAN FELIPE";
+        document.getElementById("direccion").value = "AV. LOS ANDES 2025 - SAN FELIPE - TUMBES - TUMBES - TUMBES";
+      } else {
+        // Si se apaga el switch, limpias los campos
+        document.getElementById("distrito").value = "";
+        document.getElementById("provincia").value = "";
+        document.getElementById("departamento").value = "";
+        document.getElementById("tipo-via").value = "";
+        document.getElementById("nombre-via").value = "";
+        document.getElementById("numero-via").value = "";
+        document.getElementById("int-dpto").value = "";
+        document.getElementById("sector").value = "";
+        document.getElementById("nombre-sector").value = "";
+        document.getElementById("direccion").value = "";
+      }
+    });
+  });
+});
+</script>
+
+
   <div id="payment-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
     <div class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title" tabindex="-1">
       <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
         <div>
           <h2 id="payment-modal-title" class="h4 fw-bold" style="color:var(--primary);">Datos del Contratante</h2>
-          <small id="payment-modal-sub" class="text-muted">Por favor ingresa tus datos personales para continuar</small>
         </div>
         <button type="button" id="payment-modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
@@ -687,17 +802,18 @@
           </div>
         </div>
       </div>
-      <!-- Step 1: Personal Information -->
+      <!-- Step 1: Para afiliarte, ingresa tus datos -->
       <div id="payment-step-1" class="payment-step-content">
         <form id="payment-form-1" onsubmit="event.preventDefault(); nextPaymentStep(2)">
         <div class="row gx-4"> <!-- gx controla el espacio horizontal -->
           <div class="col-lg-6 col-md-12 mb-3">
             <div id="datos_contratante_1" class="p-4 rounded-3 bg-light border">
-              <div class="row g-2 mb-3">
+              <div class="row g-2 mb-2">
+                <h5 class="h6 fw-bold mb-3 text-primary">Datos Personales</h5>
                 <div class="col-md-4">
                     <label class="form-label small fw-semibold d-block">Tipo Documento</label>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="TipoDocumento" id="dni" value="dni" required>
+                      <input class="form-check-input" type="radio" name="TipoDocumento" id="dni" value="dni" checked required>
                       <label class="form-check-label" for="dni">DNI</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -707,82 +823,121 @@
                 </div>
                 <div class="col-md-4">
                       <label class="form-label small fw-semibold d-block">Numero Documento</label>
-                      <input type="text" class="form-control" id="numero-documento" required>
+                      <input type="text" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required onchange="autocompleta()">
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-semibold d-block">Fecha Ncto.</label>
                   <input type="date" class="form-control" id="fecha-ncto" required>
                 </div>
           </div>
-          <div class="mb-3">
-            <label for="nombre-contratante" class="form-label small fw-semibold">Nombre del Contratante</label>
-            <input type="text" class="form-control" id="nombre-contratante" required>
-          </div>
-          <div class="row g-2 mb-3">
+          <div class="row g-2 mb-2">
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Ap.Paterno</label>
-              <input type="text" class="form-control" id="apellido_paterno" required>
+              <input type="text" class="form-control" id="apellido_paterno" autocomplete="off" required>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Ap.Materno</label>
-              <input type="text" class="form-control" id="apellido_materno" required>
+              <input type="text" class="form-control" id="apellido_materno" autocomplete="off" required>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Nombres</label>
-              <input type="text" class="form-control" id="nombres" required>
+              <input type="text" class="form-control" id="nombres" autocomplete="off" required>
             </div>
           </div>
-          <div class="row g-2 mb-3">
+          <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input auto_direccion" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">¿Es la misma direccion registrada en RENIEC?</label>
+                </div>
+          </div>
+          <div class="row g-2 mb-2">
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Departamento</label>
-              <input type="number" class="form-control" id="departamento" required>
+              <select class="form-select" id="departamento" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Provincia</label>
-              <input type="number" class="form-control" id="provincia" required>
+              <select class="form-select" id="provincia" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Distrito</label>
-              <input type="number" class="form-control" id="distrito" required>
+              <select class="form-select" id="distrito" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
             </div>
           </div>
-          <div class="row g-2 mb-3">
+          <div class="row g-2 mb-2">
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Tipo de Via</label>
-              <input type="text" class="form-control" id="tipo-via" required>
+              <select class="form-select" id="tipo-via" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Jr.</option>
+                <option value="2">Av.</option>
+                <option value="3">Pasaje</option>
+                <option value="4">Calle</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Nombre de la Via</label>
-              <input type="text" class="form-control" id="nombre-via" required>
+              <input type="text" class="form-control" id="nombre-via" autocomplete="off" required>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">N°/Mz/Lt</label>
-              <input type="text" class="form-control" id="numero-via" required>
+              <input type="text" class="form-control" id="numero-via" autocomplete="off" required>
             </div>
           </div>
-          <div class="row g-2 mb-3">
+          <div class="row g-2 mb-2">
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">INT/DPTO</label>
-              <input type="text" class="form-control" id="int-dpto" required>
+              <input type="text" class="form-control" id="int-dpto" autocomplete="off" required>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Sector</label>
-              <input type="text" class="form-control" id="sector" required>
+              <select class="form-select" id="sector" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Urbanizacion</option>
+                <option value="2">AA.HH</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label for="edad-contratante" class="form-label small fw-semibold">Nombre del Sector</label>
-              <input type="text" class="form-control" id="nombre-sector" required>
+              <input type="text" class="form-control" id="nombre-sector" autocomplete="off" required>
             </div>
           </div>
-          <div class="mb-3">
+          <div class="mb-2">
             <label for="direccion" class="form-label small fw-semibold">Dirección</label>
-            <textarea class="form-control" id="direccion" rows="2" required></textarea>
+            <textarea class="form-control" id="direccion" rows="2" autocomplete="off" required></textarea>
           </div>
             </div>
         </div>
+
+
          <div class="col-lg-6 col-md-12 mb-3">
             <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
-              <div class="row g-2 mb-3">
+              <div class="row g-2 mb-2">
+                <h5 class="h6 fw-bold mb-1 text-primary">Datos de Facturación</h5>
                 <div class="col-md-6">
                   <label for="edad-contratante" class="form-label small fw-semibold">Comprobante</label>
                   <select class="form-select" id="comprobante" required>
@@ -793,20 +948,20 @@
                 </div>
                 <div class="col-md-6">
                   <label for="edad-contratante" class="form-label small fw-semibold">DOC/RUC</label>
-                  <input type="text" class="form-control" id="doc-ruc" required>
+                  <input type="number" class="form-control" id="doc-ruc" autocomplete="off" required>
                 </div>
               </div>
-              <div class="row g-2 mb-3">
+              <div class="row g-2 mb-2">
                 <div class="col-md-6">
                   <label for="email" class="form-label small fw-semibold">Email</label>
-                  <input type="text" class="form-control" id="email" required>
+                  <input type="email" class="form-control" id="email" autocomplete="off" required>
                 </div>
                 <div class="col-md-6">
                   <label for="telefono" class="form-label small fw-semibold">Telefono</label>
-                  <input type="text" class="form-control" id="telefono" required>
+                  <input type="number" class="form-control" id="telefono" autocomplete="off" required>
                 </div>
               </div>
-              <div class="bg-light text-dark mb-3">
+              <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Acepto y autorizo el tratamiento de mis datos personales y remisión de información sobre productos o servicios conforme a las condiciones adjuntas.</label>
@@ -816,105 +971,351 @@
           </div>
         </div>
 
-
-          
           <div class="d-flex justify-content-end">
             <button type="submit" class="btn btn-primary">Siguiente</button>
           </div>
         </form>
       </div>
 
-      <!-- Step 2: Affiliates -->
+      <!-- Step 2: Datos de los afiliados -->
       <div id="payment-step-2" class="payment-step-content d-none">
         <div id="affiliates-container">
           <!-- Affiliates will be added here -->
         </div>
-        <div class="mb-3">
-          <button type="button" class="btn btn-outline-primary btn-sm" onclick="addAffiliateField()">
-            + Agregar Afiliado
-          </button>
-        </div>
+          <div class="row gx-4"> <!-- gx controla el espacio horizontal -->
+            <div class="col-lg-6 col-md-12 mb-3">
+              <div id="datos_contratante_1" class="p-4 rounded-3 bg-light border">
+        <div class="bg-success p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label me-4">¿El Contratante se Afiliara como Titular? </label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="con_afi" id="si" value="si" required>
+                          <label class="form-check-label" for="si">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="con_afi" id="no" value="no">
+                          <label class="form-check-label" for="no">NO</label>
+                        </div>
+                </div>
+          </div>
+                <h5 class="h6 fw-bold mb-3 text-primary">Titular</h5>
+               
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del titular?</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si" value="si" required>
+                          <label class="form-check-label" for="si">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no" value="no">
+                          <label class="form-check-label" for="no">NO</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
+                          <select type="text" class="form-control" id="condicion-parentesco" required>
+                            <option value="" selected disabled>Seleccionar</option>
+                            <option value="dni">Cónyuge del titular</option>
+                            <option value="ce">Conviviente del titular</option>
+                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
+                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Hijos con discapacidad</option>
+                          </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                      <select class="form-select" id="tipo-documento" required>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="pas">Pasaporte</option>
+                        <option value="cui">CUI</option>
+                        <option value="cnv">Codigo Nacido Vivo</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                  <div class="col-md-4">
+                    <label for="numero-documento" class="form-label small fw-semibold">Numero Documento</label>
+                    <input type="text" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="fecha-nacimiento" class="form-label small fw-semibold">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha-nacimiento" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="nombres-completos" class="form-label small fw-semibold">Nombres Completos</label>
+                    <input type="text" class="form-control" id="nombres-completos" autocomplete="off" required>
+                  </div>
+                </div>
+            
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label for="apellido-paterno" class="form-label small fw-semibold">Apellido Paterno</label>
+                  <input type="text" class="form-control" id="apellido-paterno" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="apellido-materno" class="form-label small fw-semibold">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellido-materno" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino" value="si" required>
+                          <label class="form-check-label" for="masculino">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino" value="no">
+                          <label class="form-check-label" for="femenino">Femenino</label>
+                        </div>
+                </div>
+              </div>   
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-3">
+              <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
+                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 2</h5>
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del Afiliado?</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si_2" value="si" required>
+                          <label class="form-check-label" for="si_2">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no_2" value="no">
+                          <label class="form-check-label" for="no_2">NO</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
+                          <select type="text" class="form-control" id="condicion-parentesco_2" required>
+                            <option value="" selected disabled>Seleccionar</option>
+                            <option value="dni">Cónyuge del titular</option>
+                            <option value="ce">Conviviente del titular</option>
+                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
+                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Hijos con discapacidad</option>
+                          </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                      <select class="form-select" id="tipo-documento_2" required>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="pas">Pasaporte</option>
+                        <option value="cui">CUI</option>
+                        <option value="cnv">Codigo Nacido Vivo</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                  <div class="col-md-4">
+                    <label for="numero-documento_2" class="form-label small fw-semibold">Numero Documento</label>
+                    <input type="text" class="form-control" id="numero-documento_2" maxlength="8" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="fecha-nacimiento_2" class="form-label small fw-semibold">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha-nacimiento_2" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="nombres-completos_2" class="form-label small fw-semibold">Nombres Completos</label>
+                    <input type="text" class="form-control" id="nombres-completos_2" autocomplete="off" required>
+                  </div>
+                </div>
+            
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label for="apellido-paterno_2" class="form-label small fw-semibold">Apellido Paterno</label>
+                  <input type="text" class="form-control" id="apellido-paterno_2" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="apellido-materno_2" class="form-label small fw-semibold">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellido-materno_2" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino_2" value="si" required>
+                          <label class="form-check-label" for="masculino_2">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_2" value="no">
+                          <label class="form-check-label" for="femenino_2">Femenino</label>
+                        </div>
+                </div>
+              </div>   
+              </div>
+            </div>
+          </div>
         <div class="d-flex justify-content-between">
           <button type="button" class="btn btn-light" onclick="prevPaymentStep()">Atrás</button>
           <button type="button" class="btn btn-primary" onclick="nextPaymentStep(3)">Siguiente</button>
         </div>
       </div>
+<style>
+  .nav-pills .nav-link {
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+    border-radius: 50px;
+    font-weight: 600;
+  }
+  .nav-pills .nav-link.active {
+    background-color: #0d6efd;
+    color: #fff;
+  }
 
+  .card-option {
+    border: 2px solid #eaeaea;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    padding: 1rem;
+  }
+  .card-option:hover {
+    border-color: #0d6efd;
+  }
+  .card-option input[type="radio"]:checked + label {
+    border-color: #0d6efd;
+    background-color: #f0f8ff;
+  }
+
+  .card-option label {
+    display: block;
+    cursor: pointer;
+  }
+
+  .discount {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+    margin-left: 0.3rem;
+  }
+
+  /* Cuando el radio dentro esté seleccionado, resalta el contenedor */
+.card-option:has(.form-check-input:checked) {
+  border-color: #0d6efd; /* o var(--primary) si prefieres */
+  box-shadow: 0 0 5px rgba(13,110,253,0.2);
+}
+</style>
       <!-- Step 3: Payment -->
       <div id="payment-step-3" class="payment-step-content d-none">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Resumen de la Compra</h5>
-            <div id="payment-summary">
-              <!-- Summary will be populated by JavaScript -->
+            <h4 class="h6 fw-bold mb-1 text-primary text-center">Este será el valor de tu plan mensual y/o anual</h4>
+  <div class="container py-4">
+  <h5 class="text-center fw-bold mb-1">Elige tu medio de pago</h5>
+  <p class="text-center text-muted mb-4">Monto a pagar por 2 Afiliado</p>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills justify-content-center mb-4" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-mensual-tab" data-bs-toggle="pill"
+              data-bs-target="#pills-mensual" type="button" role="tab">
+        Mensual (inc. igv)
+      </button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button class="nav-link" id="pills-anual-tab" data-bs-toggle="pill"
+              data-bs-target="#pills-anual" type="button" role="tab">
+        Anual (inc. igv)
+      </button>
+    </li>
+  </ul>
+
+  <!-- Contenido de las pestañas -->
+  <div class="tab-content" id="pills-tabContent">
+
+    <!-- 🟦 Mensual -->
+    <div class="tab-pane fade show active" id="pills-mensual" role="tabpanel">
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="cargoAuto">
+        <label for="cargoAuto" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div>
+              <strong>Cargo automático</strong><span class="discount">7% Desc.</span><br>
+              <small class="text-muted">Tu aporte mensual se cargará automáticamente a tu tarjeta de crédito todos los meses.</small>
             </div>
+            <div class="fw-bold text-end text-primary">S/. 105.00</div>
           </div>
-        </div>
-        
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Método de Pago</h5>
-            <div class="form-check mb-2">
-              <input class="form-check-input" type="radio" name="payment-method" id="credit-card" checked>
-              <label class="form-check-label" for="credit-card">
-                Tarjeta de Crédito/Débito
-              </label>
+        </label>
+      </div>
+
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="otrosMensual">
+        <label for="otrosMensual" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div><strong>Otros medios de pago</strong><br>
+              <small class="text-muted">Paga aquí con tu tarjeta o banca por internet, billetera o presencial.</small>
             </div>
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" name="payment-method" id="bank-transfer">
-              <label class="form-check-label" for="bank-transfer">
-                Transferencia Bancaria
-              </label>
-            </div>
-            
-            <div id="credit-card-fields">
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Número de Tarjeta</label>
-                <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
-              </div>
-              <div class="row g-2 mb-3">
-                <div class="col-md-6">
-                  <label class="form-label small fw-semibold">Fecha de Expiración</label>
-                  <input type="text" class="form-control" placeholder="MM/AA">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label small fw-semibold">CVV</label>
-                  <input type="text" class="form-control" placeholder="123">
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Nombre del Titular</label>
-                <input type="text" class="form-control" placeholder="Como aparece en la tarjeta">
-              </div>
-            </div>
-            
-            <div id="bank-transfer-fields" class="d-none">
-              <div class="alert alert-info">
-                <p class="mb-1">Realiza la transferencia a la siguiente cuenta:</p>
-                <p class="mb-1 fw-bold">Banco: Banco de Ejemplo</p>
-                <p class="mb-1">Tipo de Cuenta: Cuenta Corriente</p>
-                <p class="mb-1">Número de Cuenta: 123-456-789</p>
-                <p class="mb-0">A nombre de: Empresa Ejemplo S.A.C.</p>
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Número de Operación</label>
-                <input type="text" class="form-control" placeholder="Ingrese el número de operación">
-              </div>
-            </div>
-            
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="terms-accept" required>
-              <label class="form-check-label small" for="terms-accept">
-                Acepto los <a href="#" class="text-primary">Términos y Condiciones</a> y la 
-                <a href="#" class="text-primary">Política de Privacidad</a>
-              </label>
-            </div>
+            <div class="fw-bold text-primary">S/. 112.00</div>
           </div>
-        </div>
+          <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Yape_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Lukita_logo.svg" height="25">
+          </div>
+        </label>
+      </div>
+      <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto las Condiciones del Plan de Salud y autorizo el tratamiento de mis datos personales, incluyendo el envío de información comercial.</label>
+                </div>
+      </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
+                </div>
+      </div>
+    </div>
+
+    <!-- 🟩 Anual -->
+    <div class="tab-pane fade" id="pills-anual" role="tabpanel">
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="otrosMensual">
+        <label for="otrosMensual" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div><strong>Otros medios de pago</strong><br>
+              <small class="text-muted">Paga aquí con tu tarjeta o banca por internet, billetera o presencial.</small>
+            </div>
+            <div class="fw-bold text-primary">S/. 112.00</div>
+          </div>
+          <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Yape_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Lukita_logo.svg" height="25">
+          </div>
+        </label>
+      </div>
+      <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto las Condiciones del Plan de Salud y autorizo el tratamiento de mis datos personales, incluyendo el envío de información comercial.</label>
+                </div>
+      </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
+                </div>
+      </div>
+
+    </div>
+  </div>
+</div>
         
         <div class="d-flex justify-content-between">
           <button type="button" class="btn btn-light" onclick="prevPaymentStep()">Atrás</button>
-          <button type="button" class="btn btn-success" onclick="processPayment()">Confirmar Pago</button>
+          <button type="button" class="btn btn-primary" onclick="processPayment()">Siguiente</button>
         </div>
       </div>
     </div>
