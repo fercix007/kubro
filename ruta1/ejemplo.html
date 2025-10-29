@@ -1,0 +1,72 @@
+<!-- Bloque del switch -->
+<div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border mb-2">
+  <div class="form-check form-switch">
+    <input class="form-check-input termino_2" type="checkbox" role="switch" >
+    <label class="form-check-label" >
+      He leído y acepto los <strong>Términos y Condiciones</strong> del uso de los medios de pago.  
+      Al encender el switch se muestran las condiciones en un modal.
+    </label>
+  </div>
+</div>
+
+<!-- Botón -->
+<button type="button" class="btn btn-primary" id="btnSiguiente" onclick="processPayment()" disabled>
+  Siguiente
+</button>
+
+<!-- Modal de Términos y Condiciones -->
+<div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalTerminosLabel">Términos y Condiciones</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Aquí puedes colocar los <strong>términos y condiciones</strong> del servicio,
+          el uso de datos personales, medios de pago, y cualquier otra información relevante.
+        </p>
+        <ul>
+          <li>Los datos personales se tratarán conforme a la ley N° 29733.</li>
+          <li>El usuario autoriza el uso de sus datos solo con fines de facturación y servicio.</li>
+          <li>El uso indebido del medio de pago puede ser sancionado.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.termino_2');
+  const boton = document.getElementById('btnSiguiente');
+  const modal = new bootstrap.Modal(document.getElementById('modalTerminos'));
+
+  switches.forEach(sw => {
+    sw.addEventListener('change', () => {
+      const algunoEncendido = Array.from(switches).some(s => s.checked);
+
+      if (algunoEncendido) {
+        boton.disabled = false;
+        modal.show(); // mostrar el modal automáticamente
+      } else {
+        boton.disabled = true;
+      }
+    });
+  });
+});
+
+// Ejemplo de acción del botón
+function processPayment() {
+  alert("✅ Procesando pago...");
+}
+</script>
+
+<!-- Bootstrap 5 CDN (si aún no lo tienes en tu proyecto) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,96 @@
+/* styles.css - Colores y estilos personalizados (mantener iguales a Tailwind originales) */
+
+:root{
+  --primary: #4f46e5;
+  --secondary: #10b981;
+  --amber: #f59e0b;
+  --danger: #ef4444;
+  --assisted: #3b82f6;
+  --nonassisted: #a855f7;
+  --canceled: #6b7280;
+  --muted: #6b7280;
+  --transition-fast: 0.15s;
+  --transition-smooth: 0.4s;
+}
+/* Sidebar */
+.sidebar {
+  width: 260px; /* ancho fijo */
+  min-width: 260px;
+  height: 100vh;
+  transition: transform var(--transition-smooth) ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  position: relative;
+  flex-shrink: 0; /* evita que se reduzca */
+}
+
+.sidebar.collapsed {
+  transform: translateX(-260px); /* se oculta completamente */
+}
+
+/* Evita distorsión al expandir */
+@media (min-width: 768px) {
+  .sidebar {
+    transform: none;
+  }
+  .sidebar.collapsed {
+    transform: translateX(-260px);
+  }
+}
+
+/* Sidebar items */
+.sidebar .nav-link{
+  color: #fff;
+  padding: .65rem .75rem;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link.sidebar-item-active{
+  background:#374151;
+  border-left:4px solid var(--primary);
+  color:#fff;
+}
+
+/* Metric cards */
+.metric-card{
+  border-radius: .75rem;
+  transition: transform var(--transition-smooth) ease, box-shadow var(--transition-smooth) ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+}
+.metric-card:hover{ transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+
+/* Table header sticky */
+.table thead th.position-sticky{ top:0; z-index:5; }
+
+/* Action icon */
+.action-icon{ cursor:pointer; padding:.35rem; border-radius:6px; transition: background var(--transition-fast), color var(--transition-fast); }
+.action-icon:hover{ background: rgba(0,0,0,0.04); }
+
+/* Modals (custom light-weight modal to match original) */
+.custom-modal{
+  position: fixed;
+  inset: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.45);
+  z-index: 1200;
+  transition: opacity var(--transition-smooth) ease, visibility var(--transition-smooth) ease;
+}
+.custom-modal.d-none{ opacity:0; visibility:hidden; pointer-events:none; }
+.custom-modal .custom-modal-content{
+  background: #fff;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 680px;
+  transform: translateY(-6px);
+  transition: transform var(--transition-smooth) ease, opacity var(--transition-smooth) ease;
+}
+.custom-modal:not(.d-none){ opacity:1; visibility:visible; pointer-events:auto; transform:none; }
+
+/* Buttons for purple */
+.btn-purple{ background: #7c3aed; color: #fff; border-color: #7c3aed; }
+.btn-purple:hover{ background: #6d28d9; color:#fff; }
+
+/* Small helpers */
+.text-primary{ color: var(--primary) !important; }
+.text-success{ color: var(--secondary) !important; }

@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conoce Nuestros Planes</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary: #2563eb; /* azul solicitado */
+      --primary-dark: #1f4fcc;
+      --success: #16a34a;  /* verde solicitado */
+      --muted: #6b7280;
+      --bg: #f0f4f8;
+      --card-radius: 14px;
+    }
+
+    html,body{
+      height:100%;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background-color: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #111827;
+      margin:0;
+    }
+
+    /* HERO */
+    header.hero {
+      background: linear-gradient(90deg, var(--primary), #06b6d4 70%);
+      color: #fff;
+      padding: 4.5rem 0 3.5rem;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+      text-align:center;
+    }
+    header.hero h1 { letter-spacing: -0.02em; font-weight:800; }
+    header.hero p { opacity: .95; font-weight:300; }
+
+    /* CARDS CAROUSEL */
+    .plans-carousel {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      padding-bottom: 1.25rem;
+      display:flex;
+      gap:1rem;
+    }
+    .plan-card {
+      min-width: 280px;
+      max-width: 340px;
+      border-radius: var(--card-radius);
+      transition: transform .22s ease, box-shadow .22s ease;
+      flex: 0 0 auto;
+    }
+    .plan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16,24,40,0.08); }
+
+    /* Modal backdrop & content */
+    .quote-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      padding: 1rem;
+      transition: opacity .24s ease;
+    }
+    .quote-modal-backdrop.show { display:flex; }
+    .quote-modal {
+      width: 100%;
+      max-width: 1424px; /* compacto ~800px */
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 30px 80px rgba(2,6,23,0.18);
+      max-height: 300vh;
+      overflow-y: auto;
+      transform: translateY(-8px);
+      opacity: 0;
+      transition: transform .28s ease, opacity .28s ease;
+    }
+    .quote-modal-backdrop.show .quote-modal { transform: translateY(0); opacity:1; }
+
+    /* Progress */
+    .progress-line { height: 7px; background: #eef2ff; border-radius: 8px; overflow:hidden; }
+    .progress-line > .fill { height:100%; background: var(--primary); width:0%; transition: width .45s ease; }
+
+    .step-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      background: #eef2ff;
+      color: var(--muted);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.05);
+    }
+    .step-circle.active { background: var(--primary); color: #fff; transform: scale(1.06); transition: transform .18s ease; }
+    .step-circle.done { background: var(--success); color: #fff; }
+
+    /* Card options */
+    .card-option {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      border: 2px solid transparent;
+      border-radius: .75rem;
+      padding: .9rem;
+    }
+    .card-option:hover { transform: translateY(-6px); box-shadow: 0 16px 36px rgba(2,6,23,0.06); }
+    .card-option.selected {
+      border-color: rgba(37,99,235,0.9);
+      background: #eff6ff;
+      box-shadow: 0 18px 36px rgba(37,99,235,0.07);
+    }
+    .card-option.disabled { opacity:.5; pointer-events:none; }
+
+    .section-header { border-left: 4px solid var(--primary); padding-left:.8rem; }
+
+    /* Small dialog */
+    .custom-dialog { background-color: #f8fafc; border: 1px solid #e6eef8; border-radius: 10px; }
+
+    /* helpers */
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* animations on buttons */
+    .btn-primary, .btn-success { transition: transform .12s ease, box-shadow .12s ease; }
+    .btn-primary:active, .btn-success:active { transform: translateY(1px); }
+
+    /* focus outline (accessible) */
+    :focus { outline: 3px solid rgba(37,99,235,0.15); outline-offset: 2px; }
+
+    @media (max-width:575px){
+      .quote-modal { padding: 1rem; margin: .5rem; max-width: 100%; border-radius: 10px; }
+      .plan-card { min-width: 230px; }
+    }
+    .text-muted{
+      color: #6b7280;
+      font-size: 14px;
+    }
+    /* Uppercase across all forms */
+    .form-label,
+    .form-control,
+    .form-select,
+    .form-text,
+    input::placeholder,
+    textarea::placeholder {
+      text-transform: uppercase;
+    }
+    /* Card de resumen en verde y texto al doble de tamaño */
+    .card-success {
+      background-color: #d1fae5; /* verde claro */
+      border: 2px solid #6cbe8a; /* borde verde */
+    }
+    .card-success .card-body { background-color: transparent; }
+    .card-success .form-label,
+    .card-success .fw-semibold {
+      font-size: 1em; /* doble tamaño */
+    }
+    /* Card con alto fijo */
+    .card-fixed {
+      height: 320px;           /* ajusta este valor si lo deseas */
+      overflow-y: auto;        /* scroll interno si el contenido excede */
+    }
+    .card-fixed .card-body {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modal multi-step (accessible) -->
+  <div id="quote-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
+    <div id="quote-modal" class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+      <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+        <div>
+          <h2 id="modal-title" class="h4 fw-bold" style="color:var(--primary);">Cotiza tu Plan</h2>
+          <small id="modal-sub" class="text-muted">Sigue los pasos para obtener tu cotización</small>
+        </div>
+        <button type="button" id="modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar">✕</button>
+      </div>
+
+      <!-- Progress -->
+      <div class="mb-3">
+        <div class="position-relative mb-2">
+          <div class="progress-line"><div id="progress-bar-fill" class="fill"></div></div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center" style="gap:.6rem;">
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="1">1</div>
+            <div class="small text-muted mt-1">Paso 1</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="2">2</div>
+            <div class="small text-muted mt-1">Paso 2</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="3">3</div>
+            <div class="small text-muted mt-1">Paso 3</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="4">4</div>
+            <div class="small text-muted mt-1">Paso 4</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="5">5</div>
+            <div class="small text-muted mt-1">Paso 5</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle" data-step="6">6</div>
+            <div class="small text-muted mt-1">Paso 6</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steps content -->
+      <div id="step-1" class="step-content">
+        <h3 class="h6 fw-bold mb-3"></h3>
+        <form id="step-1-form" onsubmit="event.preventDefault(); nextStep()">
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label for="nombre" class="form-label small fw-semibold">Nombres Completos</label>
+              <input id="nombre" type="text" class="form-control" placeholder="Nombres Completos" required autocomplete="off">
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="celular_1" class="form-label small fw-semibold">Celular</label>
+              <input id="celular_1" type="number" maxlength="8" class="form-control" placeholder="Celular" required  autocomplete="off">
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="correo_2" class="form-label small fw-semibold">Correo</label>
+              <input id="correo_2" type="email" class="form-control" placeholder="Correo" required  autocomplete="off">
+            </div>
+            
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold">Siguiente</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- New Step 2: Datos de contacto adicionales -->
+      <div id="step-2" class="step-content d-none">
+       
+        <form onsubmit="event.preventDefault(); nextStep()">
+          <div class="mb-3">
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-3">
+              <div role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between mt-3 fw-bold">Resumen</div>
+                <div class="small text-muted mt-3">Hasta un tope anual de:</div>
+                <div class="small text-muted mt-3">Tratamientos ambulatorios y hospitalarios</div>
+                <div class="small text-muted mt-3">Emergencia accidental</div>
+                <div class="small text-muted mt-3">Cobertura a partir de:</div>
+                <div class="small text-muted mt-3">Maternidad</div>
+                <div class="small text-muted mt-3">Odontología</div>
+                <div class="small text-muted mt-3">Chequeos médicos preventivos</div>
+                <div class="small text-muted mt-3">Atención Ambulatoria a Distancia (teleconsulta, domiciliaria, informativa, etc)</div>
+                <div class="small text-muted mt-3">Más beneficios</div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-3 text-center">
+              <div class="card-option border">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:16px;">Protección Integral Plan Flexible</div>
+                <div class="small text-center mt-3">100</div>
+                <div class="small text-center mt-3">200000</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Descuento</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3"><button type="button" class="btn btn-primary" value="Ver Plan">Ver Plan</button></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="card-option border">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:16px;">Proteccion Integral Plan Tercera Edad</div>
+                <div class="small text-center mt-3">100</div>
+                <div class="small text-center mt-3">200000</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Descuento</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Descuento</div>
+                <div class="small text-center mt-3"><button type="button" class="btn btn-primary" value="Ver Plan">Ver Plan</button></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="card-option border">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:16px;">Plan Super Plus</div>
+                <div class="small text-center mt-3">180</div>
+                <div class="small text-center mt-3">400000</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3">Cubierto</div>
+                <div class="small text-center mt-3"><button type="button" class="btn btn-primary" value="Ver Plan">Ver Plan</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
+            <button type="submit" class="btn btn-primary">Siguiente</button>
+          </div>
+        </form>
+      </div>
+      <!-- New Step 3: Información de salud -->
+      <div id="step-3" class="step-content d-none">
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+                  <!-- Card: Afiliados Adicionales -->
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <h6 class="card-title fw-bold">Edad del Titular</h6>
+                        <input id="edad" type="number" class="form-control" placeholder="edad" required  autocomplete="off" onchange="calculateTotalPrima()">
+                      </div>
+                    </div>
+            </div>
+            <div class="col-12 col-md-8">
+                  <!-- Card: Afiliados Adicionales -->
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <h6 class="card-title fw-bold">Afiliados Adicionales</h6>
+                        <div id="afiliados-list" class="mb-2"></div>
+                        <button class="btn btn-primary w-100" onclick="addAffiliate()">+ Agregar Afiliado</button>
+                      </div>
+                    </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
+            <button class="btn btn-primary" onclick="nextStep(4)">Siguiente</button>
+          </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div id="step-4" class="step-content d-none">
+          <div class="mb-3">
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-2">
+              <div role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between mt-3 fw-bold">PLAN</div>
+                <div class="small text-muted mt-3">Edades de los Afiliados</div>
+                <div class="small text-muted mt-3">Titular (25 años)</div>
+                <div class="small text-muted mt-3">Afiliado 1 (20 años)</div>
+                
+              </div>
+            </div>
+
+            <div class="col-12 col-md-3 text-center">
+              <div id="P1" class="card-option border" onclick="seleccionarPlan('P1')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:15px;">Plan de Salud Proteccion Integral Flexible</div>
+                <div class="small text-center mt-3 fw-bold">Aportes Mensuales</div>
+                <div class="small text-center mt-3 fw-bold">S/ 101</div>
+                  <div class="small text-center mt-3 fw-bold">S/ 100</div>
+                  <div class="small text-muted mt-3" align="center"><button type="button" class="btn btn-primary btn-sm">Ver Plan</button></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div id="P2" class="card-option border" onclick="seleccionarPlan('P2')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:15px;">Plan de Salud Proteccion Integral Tercera Edad</div>
+                <div class="small text-center mt-3 fw-bold">Aportes Mensuales</div>
+                <div class="small text-center mt-3 fw-bold">No Hábil</div>
+                <div class="small text-center mt-3 fw-bold">No Hábil</div>
+                <div class="small text-muted mt-3" align="center"><button type="button" class="btn btn-primary btn-sm">Ver Plan</button></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="P3" class="card-option border" onclick="seleccionarPlan('P3')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold" style="font-size:15px;">Plan de Salud Proteccion Plus</div>
+                <div class="small text-center mt-3 fw-bold">Aportes Mensuales</div>
+                <div class="small text-center mt-3 fw-bold">S/ 120</div>
+                <div class="small text-center mt-3 fw-bold">S/ 130</div>
+                <div class="small text-muted mt-3" align="center"><button type="button" class="btn btn-primary btn-sm">Ver Plan</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
+            <button class="btn btn-primary" onclick="nextStep(5)">Siguiente</button>
+          </div>
+      </div>
+
+      <!-- New Step 5: Datos de contacto adicionales -->
+      <div id="step-5" class="step-content d-none">
+        <h3 class="h6 fw-bold mb-3"></h3>
+
+        <div class="mb-3">
+          <h6 class="section-header fw-bold">1. Atenciones Ambulatorias</h6>
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-3">
+              <div role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between mt-2">Cuando te atiendas Ambulatoriamente</div>
+                <div class="small text-muted mt-3">Por cada consulta médica solo pagarás: </div>
+                <div class="small text-muted mt-3">Y por medicamentos, exámenes u otros servicios solo asumirás este porcentaje:</div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-3 text-center">
+              <div id="A1" class="card-option border" onclick="selectAmbulatoria('A1')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción A1</div>
+                <div class="small text-center mt-3 fw-bold">S/ 80</div>
+                <div class="small text-center mt-3 fw-bold">30%</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="A2" class="card-option border" onclick="selectAmbulatoria('A2')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción A2</div>
+                <div class="small text-center mt-3 fw-bold">S/ 80</div>
+                <div class="small text-center mt-3 fw-bold">20%</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="A3" class="card-option border" onclick="selectAmbulatoria('A3')" role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción A3</div>
+                <div class="small text-center mt-3 fw-bold">S/ 80</div>
+                <div class="small text-center mt-3 fw-bold">10%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="hospitalarias-section" class="mb-3 opacity-50">
+          <h6 class="section-header fw-bold">2. Atenciones Hospitalarias
+            <span id="hospitalarias-status" class="badge bg-danger text-white ms-2">Selecciona una Opcion Ambulatorias</span>
+          </h6>
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-3">
+              <div role="button" tabindex="0" aria-pressed="false">
+                <div class="d-flex justify-content-between mt-2">Cuando necesites hospitalizarte:</div>
+                <div class="small text-muted mt-3">Asumirás este porcentaje sobre el total de los gastos médicos que se generen</div>
+                <div class="small text-muted mt-3">El valor mínimo por asumir no debe ser inferior a S/</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              
+              <div id="H1" class="card-option border  disabled" onclick="selectHospitalaria('H1')" role="button" tabindex="-1" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción H1</div>
+                <div class="small text-center mt-3 fw-bold">30%</div>
+                <div class="small text-center mt-3 fw-bold">S/. 600</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="H2" class="card-option border disabled" onclick="selectHospitalaria('H2')" role="button" tabindex="-1" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción H2</div>
+                <div class="small text-center mt-3 fw-bold">20%</div>
+                <div class="small text-center mt-3 fw-bold">S/. 1000</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div id="H3" class="card-option border disabled" onclick="selectHospitalaria('H3')" role="button" tabindex="-1" aria-pressed="false">
+                <div class="d-flex justify-content-center fw-bold">Opción H3</div>
+                <div class="small text-center mt-3 fw-bold">10%</div>
+                <div class="small text-center mt-3 fw-bold">S/. 1500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+        </div>
+      </div>
+
+      <div id="step-6" class="mb-3 step-content d-none">
+        <div class="row g-3 mt-2 align-items-stretch">
+            <!-- Columna 1 -->
+            <div class="col-12 col-md-6">
+              <div class="card h-100 bg-light border">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <small class="text-muted">Plan Seleccionado</small>
+                      <div id="selected-plan-name" class="fw-bold">Plan Flexible</div>
+                    </div>
+                    <div class="text-end">
+                      <small class="text-muted">Prima Calculada</small>
+                      <div id="titular-prima" class="h6 fw-bold" style="color:var(--primary)">S/. 150</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna 2 -->
+            <div class="col-12 col-md-6">
+              <div class="card h-100 bg-white border">
+                <div class="card-body">
+                  <h6 class="card-title fw-bold">Datos del Titular: <span style="color:var(--primary); text-transform: uppercase" id="titular-name"></span></h6>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-6 col-md-4">
+                      <label class="form-label small">Edad del Titular</label>
+                      <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
+                    </div>
+                    <div class="col-6 col-md-4 text-md-start text-sm-end">
+                      <label class="form-label small d-block">&nbsp;</label>
+                      <div id="titular-prima-display" class="fw-semibold text-center">S/. 155</div>
+                    </div>
+                    <div class="col-6 col-md-4 d-flex justify-content-end">
+                        <label class="form-label small d-block me-2 d-none d-md-block">&nbsp;</label>
+                        <button class="btn btn-primary"><span aria-hidden="true" class="me-1">📄</span>Ver plan</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between align-items-center p-2 rounded-3 bg-light summary-box border mt-3">
+          <div>
+            <div class="small text-muted">Total en la Cotización</div>
+            <div class="fw-bold">Afiliados: <span id="summary-total-affiliates">1</span></div>
+          </div>
+          <div class="text-end">
+            <div class="small text-muted">Aporte Total Mensual</div>
+            <div id="titular-prima-total" class="h5 fw-bold" style="color:var(--primary)">S/. 150</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
+          <button class="btn btn-success" onclick="initiateAffiliationProcess()">Confirmar</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+        
+<!---------------Home------------------>
+
+  <div id="plans-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
+    <div id="plans-modal" class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="plans-modal-title" tabindex="-1">
+      <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+        <div>
+          <h2 id="plans-modal-title" class="h5 fw-bold" style="color:var(--primary);">Planes disponibles</h2>
+          <small class="text-muted">Selecciona un plan para ver detalles</small>
+        </div>
+<button type="button" id="plans-modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar" onclick="closeModal2()">✕</button>
+      </div>
+      <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A1H1</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A1H2</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A1H3</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A2H1</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A2H2</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A2H3</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A3H1</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A3H2</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Flexible A3H3</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+          <div class="col">
+            <div class="card h-100" onclick="openModal()"><div class="card-body"><h6 class="fw-bold mb-1">Clínica Tezza Plan de Salud Integral Tercera edad 1</h6><div class="text-muted small">Esocoge la opcion de cobertura que más te convenga</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="hero mb-4">
+    <div class="container">
+      <h1 class="display-5 fw-extrabold mb-2">Conoce nuestros planes</h1>
+      <p class="lead mb-3">La mejor manera de proteger tu salud, ahora a tu alcance</p>
+    </div>
+  </header>
+
+  <!-- Logos -->
+  <section class="container mb-4">
+    <div class="rounded-3 bg-white p-3 d-flex justify-content-center gap-4 align-items-center shadow-sm">
+      <div class="text-primary fw-bold">🏥 <span class="fw-normal text-muted">Hospital Sur</span></div>
+      <div class="d-none d-sm-block text-primary fw-bold">💙 <span class="fw-normal text-muted">Clínica Central</span></div>
+      <div class="text-success fw-bold">⚕️ <span class="fw-normal text-muted">Centro Norte</span></div>
+    </div>
+  </section>
+
+  <!-- PLANS CAROUSEL -->
+  <main class="container mb-4" style="max-width: 1080px;" align="center">
+    <div id="plans-carousel" class="plans-carousel no-scrollbar mb-3" aria-hidden="false">
+      <!-- card 1 -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100" >
+          <div ><p align="center" class="text-muted"><img src="stella.JPG" height="40" width="150"></p>
+            <h5 align="center" class="card-title fw-bold">Clinica Stella Maris</h5>
+            <div class="p-3 rounded-3 bg-white border mb-3">
+              <p class="text-muted" align="left">▶ Beneficio Máximo Anual S/. 200,000</p>
+              <p class="text-muted" align="left">▶ Emergencias Accidentales al 100%</p>
+              <p class="text-muted" align="left">▶ Medico a domicilio</p>
+              <p class="text-muted" align="left">▶ Atencion unicamente en Clinica Stella</p>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100 mb-2">Cotiza Aquí</button>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 2 popular -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100">
+          <div>
+            <p align="center" class="text-muted"><img src="teza.JPG" height="40" width="150"></p>
+            <h5 align="center" class="card-title fw-bold">Clinica Tezza</h5>
+                <div class="p-3 rounded-3 bg-white border mb-3">
+                    <p class="text-muted" align="left">▶ Beneficio Máximo Anual S/. 200,000</p>
+                    <p class="text-muted" align="left">▶ Emergencias Accidentales al 100%</p>
+                    <p class="text-muted" align="left">▶ Medico a domicilio</p>
+                    <p class="text-muted" align="left">▶ Atencion unicamente en Clinica Tezza</p>
+              </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100 mb-2">Cotiza Aquí</button>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 3 -->
+      <div class="card plan-card">
+        <div class="card-body d-flex flex-column h-100">
+          <div>
+            <p align="center" class="text-muted"><img src="kubro.JPG" height="40" width="100"></p>
+            <h5 align="center" class="card-title fw-bold">Kubro 1</h5>
+            <div class="p-3 rounded-3 bg-white border mb-3">
+                <p class="text-muted" align="left">▶ Beneficio Máximo Anual S/. 200,000</p>
+                    <p class="text-muted" align="left">▶ Emergencias Accidentales al 100%</p>
+                    <p class="text-muted" align="left">▶ Medico a domicilio</p>
+                    <p class="text-muted" align="left">▶ Atencion unicamente en Kubro</p>
+              </div>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-primary w-100 mb-2">Cotiza Aquí</button>
+          </div>
+          <div class="mt-auto">
+            <button class="btn btn-light w-100" onclick="openModal2()">Ver Planes</button>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- controls desktop -->
+    <div class="d-none d-md-flex justify-content-between position-relative mt-2">
+      <button class="btn btn-light shadow-sm" onclick="scrollCarousel('left')" aria-label="Scroll left">◀</button>
+      <button class="btn btn-light shadow-sm" onclick="scrollCarousel('right')" aria-label="Scroll right">▶</button>
+    </div>
+  </main>
+
+  <footer class="text-center py-4 bg-white border-top">
+    <div class="container">
+      <div>&copy; 2025 Seguros de Salud. Todos los derechos reservados.</div>
+      <div id="user-id-display" class="small text-muted mt-1">ID de Usuario: (Local)</div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE ACREDITACION Y PAGO -->
+   <style>
+    /* Compactar fuente y altura SOLO dentro de los dos paneles */
+#datos_contratante_1 .form-label,
+#datos_contratante_2 .form-label {
+  font-size: 0.75rem; /* ~12px */
+}
+
+#datos_contratante_1 .form-control,
+#datos_contratante_1 .form-select,
+#datos_contratante_2 .form-control,
+#datos_contratante_2 .form-select {
+  font-size: 0.875rem;          /* ~14px */
+  padding: 0.25rem 0.5rem;       /* menos alto */
+  height: calc(1.5em + 0.5rem + 2px); /* mantener proporción compacta */
+}
+
+#datos_contratante_1 .form-check-label,
+#datos_contratante_2 .form-check-label {
+  font-size: 0.8125rem; /* ~13px */
+}
+
+#datos_contratante_1 .h6,
+#datos_contratante_2 .h6 {
+  font-size: 0.9rem; /* compactar subtítulos si aplica */
+}
+
+/* Switch encendido en verde (afecta solo a switches con role="switch") */
+.form-check-input[role="switch"]:checked {
+  background-color: var(--success); /* ya definido como #16a34a */
+  border-color: var(--success);
+}
+
+/* Opcional: aro de enfoque coherente en verde */
+.form-check-input[role="switch"]:focus {
+  box-shadow: 0 0 0 .25rem rgba(22, 163, 74, .25);
+}
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.form-check-input[type="checkbox"][role="switch"]');
+
+  switches.forEach(sw => {
+    const wrapper = sw.closest('.bg-danger, .bg-success, .bg-warning');
+    if (!wrapper) return;
+
+    const hadWarning = wrapper.classList.contains('bg-warning');
+
+    const updateWrapperClass = () => {
+      if (sw.checked) {
+        wrapper.classList.add('bg-success');
+        wrapper.classList.remove('bg-danger', 'bg-warning');
+      } else {
+        wrapper.classList.remove('bg-success');
+        // restaurar estado original
+        if (hadWarning) {
+          wrapper.classList.add('bg-warning');
+          wrapper.classList.remove('bg-danger');
+        } else {
+          wrapper.classList.add('bg-danger');
+          wrapper.classList.remove('bg-warning');
+        }
+      }
+    };
+
+    sw.addEventListener('change', updateWrapperClass);
+    updateWrapperClass(); // sincroniza estado inicial
+  });
+});
+
+function autocompleta(){
+    document.getElementById("apellido_paterno").value = "TORRE";
+    document.getElementById("apellido_materno").value = "TAMAYO";
+    document.getElementById("nombres").value = "JUAN CARLOS";
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.auto_direccion');
+
+  switches.forEach(sw => {
+    sw.addEventListener('change', () => {
+      const algunoEncendido = Array.from(switches).some(s => s.checked);
+
+      if (algunoEncendido) {
+        document.getElementById("distrito").value = "1";
+        document.getElementById("provincia").value = "1";
+        document.getElementById("departamento").value = "1";
+        document.getElementById("tipo-via").value = "2";
+        document.getElementById("nombre-via").value = "AV. LOS ANDES";
+        document.getElementById("numero-via").value = "2025";
+        document.getElementById("int-dpto").value = "-";
+        document.getElementById("sector").value = "1";
+        document.getElementById("nombre-sector").value = "SAN FELIPE";
+        document.getElementById("direccion").value = "AV. LOS ANDES 2025 - SAN FELIPE - TUMBES - TUMBES - TUMBES";
+      } else {
+        // Si se apaga el switch, limpias los campos
+        document.getElementById("distrito").value = "";
+        document.getElementById("provincia").value = "";
+        document.getElementById("departamento").value = "";
+        document.getElementById("tipo-via").value = "";
+        document.getElementById("nombre-via").value = "";
+        document.getElementById("numero-via").value = "";
+        document.getElementById("int-dpto").value = "";
+        document.getElementById("sector").value = "";
+        document.getElementById("nombre-sector").value = "";
+        document.getElementById("direccion").value = "";
+      }
+    });
+  });
+});
+</script>
+
+
+  <div id="payment-modal-backdrop" class="quote-modal-backdrop" role="presentation" aria-hidden="true">
+    <div class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title" tabindex="-1">
+      <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+        <div>
+          <h2 id="payment-modal-title" class="h4 fw-bold" style="color:var(--primary);">Datos del Contratante</h2>
+        </div>
+        <button type="button" id="payment-modal-close" class="btn btn-light btn-sm" aria-label="Cerrar" title="Cerrar">✕</button>
+      </div>
+
+      <!-- Progress -->
+      <div class="mb-3">
+        <div class="position-relative mb-2">
+          <div class="progress-line"><div id="payment-progress-bar" class="fill"></div></div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center" style="gap:.6rem;">
+          <div class="text-center flex-fill">
+            <div class="step-circle payment-step" data-step="1">1</div>
+            <div class="small text-muted mt-1">Contratante o Contacto</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle payment-step" data-step="2">2</div>
+            <div class="small text-muted mt-1">Afiliados</div>
+          </div>
+          <div class="text-center flex-fill">
+            <div class="step-circle payment-step" data-step="3">3</div>
+            <div class="small text-muted mt-1">Pago</div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 1: Para afiliarte, ingresa tus datos -->
+      <div id="payment-step-1" class="payment-step-content">
+        <form id="payment-form-1" onsubmit="event.preventDefault(); nextPaymentStep(2)">
+        <div class="row gx-4"> <!-- gx controla el espacio horizontal -->
+          <div class="col-lg-6 col-md-12 mb-3">
+            <div id="datos_contratante_1" class="p-4 rounded-3 bg-light border">
+              <div class="row g-2 mb-2">
+                <h5 class="h6 fw-bold mb-3 text-primary">Datos Personales</h5>
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="TipoDocumento" id="dni" value="dni" checked required>
+                      <label class="form-check-label" for="dni">DNI</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="TipoDocumento" id="ce" value="ce">
+                      <label class="form-check-label" for="ce">CE</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Numero Documento</label>
+                      <input type="text" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required onchange="autocompleta()">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Fecha Ncto.</label>
+                  <input type="date" class="form-control" id="fecha-ncto" required>
+                </div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Ap.Paterno</label>
+              <input type="text" class="form-control" id="apellido_paterno" autocomplete="off" required>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Ap.Materno</label>
+              <input type="text" class="form-control" id="apellido_materno" autocomplete="off" required>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Nombres</label>
+              <input type="text" class="form-control" id="nombres" autocomplete="off" required>
+            </div>
+          </div>
+          <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input auto_direccion" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">¿Es la misma direccion registrada en RENIEC?</label>
+                </div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Departamento</label>
+              <select class="form-select" id="departamento" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Provincia</label>
+              <select class="form-select" id="provincia" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Distrito</label>
+              <select class="form-select" id="distrito" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Tumbes</option>
+                <option value="2">Piura</option>
+                <option value="3">Lambayeque</option>
+                <option value="4">La Libertad</option>
+                <option value="5">Lima</option>
+                <option value="6">La Libertad</option>
+              </select>
+            </div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Tipo de Via</label>
+              <select class="form-select" id="tipo-via" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Jr.</option>
+                <option value="2">Av.</option>
+                <option value="3">Pasaje</option>
+                <option value="4">Calle</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Nombre de la Via</label>
+              <input type="text" class="form-control" id="nombre-via" autocomplete="off" required>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">N°/Mz/Lt</label>
+              <input type="number" class="form-control" id="numero-via" autocomplete="off" required>
+            </div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">INT/DPTO</label>
+              <input type="text" class="form-control" id="int-dpto" autocomplete="off" required>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Sector</label>
+              <select class="form-select" id="sector" required>
+                <option value="" selected disabled>Seleccionar</option>
+                <option value="1">Urbanizacion</option>
+                <option value="2">AA.HH</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="edad-contratante" class="form-label small fw-semibold">Nombre del Sector</label>
+              <input type="text" class="form-control" id="nombre-sector" autocomplete="off" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label for="direccion" class="form-label small fw-semibold">Dirección</label>
+            <textarea class="form-control" id="direccion" rows="2" autocomplete="off" required></textarea>
+          </div>
+            </div>
+        </div>
+
+
+         <div class="col-lg-6 col-md-12 mb-3">
+            <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
+              <div class="row g-2 mb-2">
+                <h5 class="h6 fw-bold mb-1 text-primary">Datos de Facturación</h5>
+                <div class="col-md-6">
+                  <label for="edad-contratante" class="form-label small fw-semibold">Comprobante</label>
+                  <select class="form-select" id="comprobante" required>
+                    <option value="" selected disabled>Seleccionar</option>
+                    <option value="boleta">Boleta</option>
+                    <option value="factura">Factura</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="edad-contratante" class="form-label small fw-semibold">DOC/RUC</label>
+                  <input type="number" class="form-control" id="doc-ruc" maxlength="11" autocomplete="off" required>
+                </div>
+              </div>
+              <div class="row g-2 mb-2">
+                <div class="col-md-6">
+                  <label for="email" class="form-label small fw-semibold">Correo</label>
+                  <input type="email" class="form-control" id="email" autocomplete="off" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="telefono" class="form-label small fw-semibold">Movil</label>
+                  <input type="number" class="form-control" id="telefono" maxlength="9" autocomplete="off" required>
+                </div>
+              </div>
+              <div class="row g-2 mb-2">
+                <div class="col-md-6">
+                  <label for="email_2" class="form-label small fw-semibold">Correo Opcional</label>
+                  <input type="email" class="form-control" id="email_2" autocomplete="off" >
+                </div>
+                <div class="col-md-6">
+                  <label for="telefono_2" class="form-label small fw-semibold">Movil Opcional</label>
+                  <input type="number" class="form-control" id="telefono_2" autocomplete="off" >
+                </div>
+              </div>
+              <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Acepto y autorizo el tratamiento de mis datos personales y remisión de información sobre productos o servicios conforme a las condiciones adjuntas.</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Siguiente</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Datos de los afiliados -->
+      <div id="payment-step-2" class="payment-step-content d-none">
+        <div id="affiliates-container">
+          <!-- Affiliates will be added here -->
+        </div>
+          <div class="row gx-4"> <!-- gx controla el espacio horizontal -->
+            <div class="col-lg-6 col-md-12 mb-3">
+              <div id="datos_contratante_1" class="p-4 rounded-3 bg-light border">
+        <div class="bg-success p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label me-4">¿El Contratante se Afiliara como Titular? </label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="con_afi" id="si" value="si" required>
+                          <label class="form-check-label" for="si">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="con_afi" id="no" value="no">
+                          <label class="form-check-label" for="no">NO</label>
+                        </div>
+                </div>
+          </div>
+                <h5 class="h6 fw-bold mb-3 text-primary">Titular</h5>
+               
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del titular?</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si" value="si" required>
+                          <label class="form-check-label" for="si">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no" value="no">
+                          <label class="form-check-label" for="no">NO</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
+                          <select type="text" class="form-control" id="condicion-parentesco" required>
+                            <option value="" selected disabled>Seleccionar</option>
+                            <option value="titular">Titular</option>
+                            <option value="dni">Cónyuge del titular</option>
+                            <option value="ce">Conviviente del titular</option>
+                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
+                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Hijos con discapacidad</option>
+                          </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                      <select class="form-select" id="tipo-documento" required>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="pas">Pasaporte</option>
+                        <option value="cui">CUI</option>
+                        <option value="cnv">Codigo Nacido Vivo</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                  <div class="col-md-4">
+                    <label for="numero-documento" class="form-label small fw-semibold">Numero Documento</label>
+                    <input type="number" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="fecha-nacimiento" class="form-label small fw-semibold">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha-nacimiento" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="nombres-completos" class="form-label small fw-semibold">Nombres Completos</label>
+                    <input type="text" class="form-control" id="nombres-completos" autocomplete="off" required>
+                  </div>
+                </div>
+            
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label for="apellido-paterno" class="form-label small fw-semibold">Apellido Paterno</label>
+                  <input type="text" class="form-control" id="apellido-paterno" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="apellido-materno" class="form-label small fw-semibold">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellido-materno" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino" value="si" required>
+                          <label class="form-check-label" for="masculino">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino" value="no">
+                          <label class="form-check-label" for="femenino">Femenino</label>
+                        </div>
+                </div>
+              </div>   
+              </div>
+            </div>
+            <script>
+                  document.addEventListener('DOMContentLoaded', function () {
+                    const si2 = document.getElementById('si_2');
+                    const no2 = document.getElementById('no_2');
+                    if (!si2 || !no2) return;
+
+                    // Solo alerta cuando se selecciona "SI"
+                    si2.addEventListener('change', function () {
+                      if (this.checked) {
+                         document.getElementById("si").value = "si";
+                         document.getElementById("condicion-parentesco").value = "titular";
+                         document.getElementById("tipo-documento").value = "dni";
+                         document.getElementById("numero-documento").value = "45654654";
+                         document.getElementById("fecha-nacimiento").value = "1990-10-28";
+                         document.getElementById("nombres-completos").value = "JUAN CARLOS";
+                         document.getElementById("apellido-paterno").value = "TORRE";
+                         document.getElementById("apellido-materno").value = "TAMAYO";
+                         document.getElementById("masculino").value = "si";
+                      }
+                    });
+
+                    // "NO" no hace nada
+                    // no2.addEventListener('change', function () {});
+                  });
+                  </script>
+            <div class="col-lg-6 col-md-12 mb-3">
+              <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
+                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 2</h5>
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del Afiliado?</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si_2" value="si" required>
+                          <label class="form-check-label" for="si_2">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no_2" value="no">
+                          <label class="form-check-label" for="no_2">NO</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
+                          <select type="text" class="form-control" id="condicion-parentesco_2" required>
+                            <option value="" selected disabled>Seleccionar</option>
+                            <option value="dni">Cónyuge del titular</option>
+                            <option value="ce">Conviviente del titular</option>
+                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
+                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Hijos con discapacidad</option>
+                          </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                      <select class="form-select" id="tipo-documento_2" required>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="pas">Pasaporte</option>
+                        <option value="cui">CUI</option>
+                        <option value="cnv">Codigo Nacido Vivo</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                  <div class="col-md-4">
+                    <label for="numero-documento_2" class="form-label small fw-semibold">Numero Documento</label>
+                    <input type="number" class="form-control" id="numero-documento_2" maxlength="8" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="fecha-nacimiento_2" class="form-label small fw-semibold">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha-nacimiento_2" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="nombres-completos_2" class="form-label small fw-semibold">Nombres Completos</label>
+                    <input type="text" class="form-control" id="nombres-completos_2" autocomplete="off" required>
+                  </div>
+                </div>
+            
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label for="apellido-paterno_2" class="form-label small fw-semibold">Apellido Paterno</label>
+                  <input type="text" class="form-control" id="apellido-paterno_2" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="apellido-materno_2" class="form-label small fw-semibold">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellido-materno_2" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino_2" value="si" required>
+                          <label class="form-check-label" for="masculino_2">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_2" value="no">
+                          <label class="form-check-label" for="femenino_2">Femenino</label>
+                        </div>
+                </div>
+              </div>   
+              </div>
+            </div>
+          </div>
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-light" onclick="prevPaymentStep()">Atrás</button>
+          <button type="button" class="btn btn-primary" onclick="nextPaymentStep(3)">Siguiente</button>
+        </div>
+      </div>
+<style>
+  .nav-pills .nav-link {
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+    border-radius: 50px;
+    font-weight: 600;
+  }
+  .nav-pills .nav-link.active {
+    background-color: #0d6efd;
+    color: #fff;
+  }
+
+  .card-option {
+    border: 2px solid #eaeaea;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    padding: 1rem;
+  }
+  .card-option:hover {
+    border-color: #0d6efd;
+  }
+  .card-option input[type="radio"]:checked + label {
+    border-color: #0d6efd;
+    background-color: #f0f8ff;
+  }
+
+  .card-option label {
+    display: block;
+    cursor: pointer;
+  }
+
+  .discount {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+    margin-left: 0.3rem;
+  }
+
+  /* Cuando el radio dentro esté seleccionado, resalta el contenedor */
+.card-option:has(.form-check-input:checked) {
+  border-color: #0d6efd; /* o var(--primary) si prefieres */
+  box-shadow: 0 0 5px rgba(13,110,253,0.2);
+}
+</style>
+      <!-- Step 3: Payment -->
+      <div id="payment-step-3" class="payment-step-content d-none">
+            <h4 class="h6 fw-bold mb-1 text-primary text-center">Este será el valor de tu plan mensual y/o anual</h4>
+  <div class="container py-4">
+  <h5 class="text-center fw-bold mb-1">Elige tu medio de pago</h5>
+  <p class="text-center text-muted mb-4">Monto a pagar por 2 Afiliado</p>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills justify-content-center mb-4" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-mensual-tab" data-bs-toggle="pill"
+              data-bs-target="#pills-mensual" type="button" role="tab">
+        Mensual (inc. igv)
+      </button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button class="nav-link" id="pills-anual-tab" data-bs-toggle="pill"
+              data-bs-target="#pills-anual" type="button" role="tab">
+        Anual (inc. igv)
+      </button>
+    </li>
+  </ul>
+
+  <!-- Contenido de las pestañas -->
+  <div class="tab-content" id="pills-tabContent">
+
+    <!-- 🟦 Mensual -->
+    <div class="tab-pane fade show active" id="pills-mensual" role="tabpanel">
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="cargoAuto">
+        <label for="cargoAuto" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div>
+              <strong>Cargo automático</strong><span class="discount">7% Desc.</span><br>
+              <small class="text-muted">Tu aporte mensual se cargará automáticamente a tu tarjeta de crédito todos los meses.</small>
+            </div>
+            <div class="fw-bold text-end text-primary">S/. 105.00</div>
+          </div>
+        </label>
+      </div>
+
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="otrosMensual">
+        <label for="otrosMensual" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div><strong>Otros medios de pago</strong><br>
+              <small class="text-muted">Paga aquí con tu tarjeta o banca por internet, billetera o presencial.</small>
+            </div>
+            <div class="fw-bold text-primary">S/. 112.00</div>
+          </div>
+          <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Yape_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Lukita_logo.svg" height="25">
+          </div>
+        </label>
+      </div>
+      <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto las Condiciones del Plan de Salud y autorizo el tratamiento de mis datos personales, incluyendo el envío de información comercial.</label>
+                </div>
+      </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
+                </div>
+      </div>
+    </div>
+
+    <!-- 🟩 Anual -->
+    <div class="tab-pane fade" id="pills-anual" role="tabpanel">
+      <div class="card-option mb-3 d-flex align-items-start gap-2">
+        <input type="radio" class="form-check-input me-2" name="pagoMensual" id="otrosMensual">
+        <label for="otrosMensual" class="form-check-label flex-grow-1 mb-0">
+          <div class="d-flex justify-content-between align-items-center inline-flex">
+            <div><strong>Otros medios de pago</strong><br>
+              <small class="text-muted">Paga aquí con tu tarjeta o banca por internet, billetera o presencial.</small>
+            </div>
+            <div class="fw-bold text-primary">S/. 112.00</div>
+          </div>
+          <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Yape_logo.svg" height="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Lukita_logo.svg" height="25">
+          </div>
+        </label>
+      </div>
+      <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto las Condiciones del Plan de Salud y autorizo el tratamiento de mis datos personales, incluyendo el envío de información comercial.</label>
+                </div>
+      </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
+                </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+        
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-light" onclick="prevPaymentStep()">Atrás</button>
+          <button type="button" class="btn btn-primary"  id="btnSiguiente" onclick="processPayment()" disabled>Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Términos y Condiciones -->
+<div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalTerminosLabel">Términos y Condiciones</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Aquí puedes colocar los <strong>términos y condiciones</strong> del servicio,
+          el uso de datos personales, medios de pago, y cualquier otra información relevante.
+        </p>
+        <ul>
+          <li>Los datos personales se tratarán conforme a la ley N° 29733.</li>
+          <li>El usuario autoriza el uso de sus datos solo con fines de facturación y servicio.</li>
+          <li>El uso indebido del medio de pago puede ser sancionado.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const switches = document.querySelectorAll('.termino_2');
+  const boton = document.getElementById('btnSiguiente');
+  const modal = new bootstrap.Modal(document.getElementById('modalTerminos'));
+
+  switches.forEach(sw => {
+    sw.addEventListener('change', () => {
+      const algunoEncendido = Array.from(switches).some(s => s.checked);
+
+      if (algunoEncendido) {
+        boton.disabled = false;
+        modal.show(); // mostrar el modal automáticamente
+      } else {
+        boton.disabled = true;
+      }
+    });
+  });
+});
+  // Mostrar el modal al hacer clic en "Siguiente"
+  function processPayment() {
+      // Validate payment form
+      /*
+      const termsAccepted = document.getElementById('terms-accept').checked;
+      if (!termsAccepted) {
+        alert('Debes aceptar los términos y condiciones para continuar');
+        return;
+      }
+*/
+    const modalEl = document.getElementById('paymentGatewayModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+
+  // Al pagar: cerrar y redirigir al index
+  document.addEventListener('DOMContentLoaded', function () {
+    const payBtn = document.getElementById('payConfirmBtn');
+    if (payBtn) {
+      payBtn.addEventListener('click', function () {
+        // Cierra el modal actual (si sigue abierto)
+        const modalEl = document.getElementById('paymentGatewayModal');
+        const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        instance.hide();
+
+        // Redirige al index
+        window.location.href = 'index.html';
+      });
+    }
+  });
+</script>
+
+
+
+
+
+  <!-- Modal: Pasarela de Pago -->
+<div class="modal fade" id="paymentGatewayModal" tabindex="-1" aria-labelledby="paymentGatewayModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="paymentGatewayModalLabel" class="modal-title">Pasarela de Pago</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center"><img src="pasarella.jpg" alt=""></div>
+      </div>
+      <div class="modal-footer">
+        <button id="payConfirmBtn" type="button" class="btn btn-success">Pagar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ---------- Modal State ---------- */
+    let lastFocusedElement2 = null;  // Variable para manejar el foco del segundo modal
+    
+    /* ---------- Payment Modal State ---------- */
+    let paymentCurrentStep = 1;
+    const paymentTotalSteps = 3;
+    let paymentAffiliates = [];
+    
+    /* ---------- Payment Modal Functions ---------- */
+    function openPaymentModal() {
+      // Close any open modals first
+      closeModal();
+      closeModal2();
+      
+      // Reset form
+      paymentCurrentStep = 1;
+      paymentAffiliates = [];
+      document.getElementById('payment-form-1').reset();
+      document.getElementById('affiliates-container').innerHTML = '';
+      
+      // Show modal
+      const modal = document.getElementById('payment-modal-backdrop');
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      // Focus on the first form element for better accessibility
+      const firstInput = document.querySelector('#payment-step-1 input, #payment-step-1 button');
+      if (firstInput) firstInput.focus();
+      
+      // Update progress
+      updatePaymentProgress();
+    }
+    
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-modal-backdrop');
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+    
+    function updatePaymentTitles() {
+      const titleElement = document.getElementById('payment-modal-title');
+      const subtitleElement = document.getElementById('payment-modal-sub');
+      
+      const titles = {
+        1: {
+          title: 'Para afiliarte, ingresa tus datos',
+          subtitle: 'Por favor ingresa tus datos personales para continuar'
+        },
+        2: {
+          title: 'Datos de los afiliados',
+          subtitle: 'Agrega los datos de los miembros adicionales'
+        },
+        3: {
+          title: 'Método de Pago',
+          subtitle: 'Selecciona tu método de pago preferido'
+        }
+      };
+      
+      const currentTitle = titles[paymentCurrentStep] || { title: '', subtitle: '' };
+      titleElement.textContent = currentTitle.title;
+      subtitleElement.textContent = currentTitle.subtitle;
+    }
+    
+    function updatePaymentProgress() {
+      // Update progress bar
+      const progress = ((paymentCurrentStep - 1) / (paymentTotalSteps - 1)) * 100;
+      document.getElementById('payment-progress-bar').style.width = progress + '%';
+      
+      // Update step indicators
+      document.querySelectorAll('.payment-step').forEach(step => {
+        const stepNum = parseInt(step.getAttribute('data-step'), 10);
+        step.classList.remove('active', 'done');
+        if (stepNum === paymentCurrentStep) {
+          step.classList.add('active');
+        } else if (stepNum < paymentCurrentStep) {
+          step.classList.add('done');
+        }
+      });
+      
+      // Show current step content
+      document.querySelectorAll('.payment-step-content').forEach(content => {
+        content.classList.add('d-none');
+      });
+      const currentContent = document.getElementById(`payment-step-${paymentCurrentStep}`);
+      if (currentContent) currentContent.classList.remove('d-none');
+      
+      // Update titles for the current step
+      updatePaymentTitles();
+    }
+    
+    function nextPaymentStep(step = null) {
+      // Validate current step before proceeding
+      if (paymentCurrentStep === 1) {
+        const form = document.getElementById('payment-form-1');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+      }
+      
+      // If specific step is provided, go to that step
+      if (step) {
+        paymentCurrentStep = step;
+      } else if (paymentCurrentStep < paymentTotalSteps) {
+        paymentCurrentStep++;
+      }
+      
+      updatePaymentProgress();
+    }
+    
+    function prevPaymentStep() {
+      if (paymentCurrentStep > 1) {
+        paymentCurrentStep--;
+        updatePaymentProgress();
+      }
+    }
+    
+    function addAffiliateField() {
+      const container = document.getElementById('affiliates-container');
+      const id = Date.now();
+      const affiliate = { id, age: 18 };
+      paymentAffiliates.push(affiliate);
+      
+      const div = document.createElement('div');
+      div.className = 'mb-3 p-3 border rounded';
+      div.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">Afiliado ${paymentAffiliates.length}</h6>
+          <button type="button" class="btn-close" onclick="removeAffiliateField(${id})" aria-label="Eliminar"></button>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small">Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre del afiliado" required>
+          </div>
+          <div class="col-4">
+            <label class="form-label small">Edad</label>
+            <input type="number" class="form-control affiliate-age" 
+                   value="18" min="0" max="120" 
+                   onchange="updateAffiliateAge(${id}, this.value)">
+          </div>
+          <div class="col-2 d-flex align-items-end">
+            <span class="badge bg-primary">S/ <span class="affiliate-prima">135</span></span>
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+    
+    function removeAffiliateField(id) {
+      const index = paymentAffiliates.findIndex(a => a.id === id);
+      if (index > -1) {
+        paymentAffiliates.splice(index, 1);
+      }
+      document.querySelector(`[onclick*="removeAffiliateField(${id})"]`).closest('.mb-3').remove();
+      updateAffiliatesNumbers();
+    }
+    
+    function updateAffiliateAge(id, age) {
+      const affiliate = paymentAffiliates.find(a => a.id === id);
+      if (affiliate) {
+        affiliate.age = parseInt(age) || 0;
+        const prima = getPrimaByAge(age);
+        const primaElement = document.querySelector(`[onchange*="updateAffiliateAge(${id}"]`)
+          .closest('.row').querySelector('.affiliate-prima');
+        if (primaElement) {
+          primaElement.textContent = prima;
+        }
+      }
+    }
+    
+    function updateAffiliatesNumbers() {
+      const affiliates = document.querySelectorAll('#affiliates-container > div');
+      affiliates.forEach((affiliate, index) => {
+        const title = affiliate.querySelector('h6');
+        if (title) {
+          title.textContent = `Afiliado ${index + 1}`;
+        }
+      });
+    }
+    
+    /*
+    function processPayment() {
+      // Validate payment form
+      const termsAccepted = document.getElementById('terms-accept').checked;
+      if (!termsAccepted) {
+        alert('Debes aceptar los términos y condiciones para continuar');
+        return;
+      }
+      
+      // Show success message
+      showDialogModal(
+        '¡Pago Procesado!', 
+        'Tu pago ha sido procesado exitosamente. Recibirás un correo con los detalles de tu pago y la confirmación de tu seguro.',
+        [{
+          text: 'Aceptar',
+          actionName: 'closePaymentModal'
+        }]
+      );
+    }*/
+    
+    // Add event listeners for payment method toggles
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle between credit card and bank transfer fields
+      document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const isCreditCard = this.id === 'credit-card';
+          document.getElementById('credit-card-fields').classList.toggle('d-none', !isCreditCard);
+          document.getElementById('bank-transfer-fields').classList.toggle('d-none', isCreditCard);
+        });
+      });
+      
+      // Close button for payment modal
+      document.getElementById('payment-modal-close').addEventListener('click', closePaymentModal);
+      
+      // Initialize first affiliate field
+      addAffiliateField();
+    });
+    
+    /* ---------- Estado ---------- */
+    let currentStep = 1;
+    const totalSteps = 6;
+    let affiliates = [{ id: 1, age: 18, prima: 99 }];
+    let selectedPlanName = 'Plan Flexible';
+    let titularAge = 33;
+    let titularPrimaValue = 135;
+    let selectedAmbulatoria = null;
+    let selectedHospitalaria = null;
+
+    /* ---------- Utils ---------- */
+    function getPrimaByAge(age) {
+      age = parseInt(age);
+      if (isNaN(age)) return 0;
+      if (age < 18) return 50;
+      if (age < 30) return 135;
+      if (age < 50) return 150;
+      if (age < 65) return 200;
+      return 300;
+    }
+    function formatCurrency(amount) {
+      const n = Number(amount) || 0;
+      return `S/. ${n.toFixed(0)}`;
+    }
+
+    /* ---------- Modal open/close + focus trap ---------- */
+    const backdrop = document.getElementById('quote-modal-backdrop');
+    const modalEl = document.getElementById('quote-modal');
+    const btnClose = document.getElementById('modal-close');
+    let lastFocusedElement = null;
+
+    function openModal(){
+      closeModal2()
+      lastFocusedElement = document.activeElement;
+      backdrop.classList.add('show');
+      backdrop.setAttribute('aria-hidden','false');
+      modalEl.focus();
+      currentStep = 1;
+      updateProgress();
+      trapFocusStart();
+    }
+
+    function closeModal(){
+      backdrop.classList.remove('show');
+      backdrop.setAttribute('aria-hidden','true');
+      releaseFocusTrap();
+      if (lastFocusedElement) lastFocusedElement.focus();
+    }
+
+    // Backdrop click handler removed to prevent closing when clicking outside modal
+
+    btnClose.addEventListener('click', closeModal);
+
+    function openModal2(){
+      try { lastFocusedElement2 = document.activeElement; } catch(e) {}
+      const bd = document.getElementById('plans-modal-backdrop');
+      const el = document.getElementById('plans-modal');
+      if (!bd || !el) return;
+      bd.classList.add('show');
+      bd.setAttribute('aria-hidden','false');
+      el.focus();
+    }
+
+    function closeModal2(){
+      const bd = document.getElementById('plans-modal-backdrop');
+      const el = document.getElementById('plans-modal');
+      if (!bd || !el) return;
+      bd.classList.remove('show');
+      bd.setAttribute('aria-hidden','true');
+      if (lastFocusedElement2) try { lastFocusedElement2.focus(); } catch(e) {}
+    }
+
+    // Close with Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const quoteShown = backdrop.classList.contains('show');
+        const plansBackdrop = document.getElementById('plans-modal-backdrop');
+        const plansShown = plansBackdrop && plansBackdrop.classList.contains('show');
+        if (plansShown) {
+          closeModal2();
+        } else if (quoteShown) {
+          closeModal();
+        }
+      }
+    });
+
+    /* Focus trap implementation */
+    let focusableElements = [];
+    let firstFocusable = null;
+    let lastFocusable = null;
+    let focusTrapHandler = null;
+
+    function updateFocusable() {
+      focusableElements = modalEl.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      focusableElements = Array.prototype.slice.call(focusableElements).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length);
+      firstFocusable = focusableElements[0] || modalEl;
+      lastFocusable = focusableElements[focusableElements.length -1] || modalEl;
+    }
+
+    function trapFocusStart() {
+      updateFocusable();
+      if (firstFocusable) firstFocusable.focus();
+      focusTrapHandler = function(e){
+        if (e.key !== 'Tab') return;
+        updateFocusable();
+        if (focusableElements.length === 0) {
+          e.preventDefault(); return;
+        }
+        if (e.shiftKey) { // Shift + Tab
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else { // Tab
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      };
+      modalEl.addEventListener('keydown', focusTrapHandler);
+    }
+
+    function releaseFocusTrap() {
+      if (focusTrapHandler) modalEl.removeEventListener('keydown', focusTrapHandler);
+      focusTrapHandler = null;
+    }
+
+    /* ---------- Steps / Progress ---------- */
+    function updateProgress() {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      progressFill.style.width = progress + '%';
+
+      document.querySelectorAll('.step-circle').forEach(circle => {
+        const step = parseInt(circle.getAttribute('data-step'), 10);
+        circle.classList.remove('active','done');
+        if (step === currentStep) circle.classList.add('active');
+        else if (step < currentStep) circle.classList.add('done');
+      });
+
+      document.querySelectorAll('.step-content').forEach(content => content.classList.add('d-none'));
+      const currentContent = document.querySelector(`#step-${currentStep}`);
+      if (currentContent) currentContent.classList.remove('d-none');
+
+      // Actualiza el encabezado con el nombre y la edad ingresados (si existen)
+      (function(){
+        const nameInput = document.getElementById('nombre');
+        const ageInput = document.getElementById('edad');
+        const headerSpan = document.getElementById('titular-name');
+        //const headerSpan2 = document.getElementById('titular-name-2');
+        if (headerSpan && nameInput && ageInput) {
+          const nombre = (nameInput.value || '').trim();
+          const edadVal = (ageInput.value || '').trim();
+          headerSpan.textContent = nombre && edadVal ? `${nombre} - ${edadVal} años` : nombre || '';
+          //headerSpan2.textContent = nombre && edadVal ? `${nombre} - ${edadVal} años` : nombre || '';
+        }
+      })();
+
+      // actions on steps
+      if (currentStep === 3) {
+        renderAffiliates();
+        calculateTotalPrima();
+      }
+      if (currentStep === 4) {
+        updateNextButtonState();
+      }
+      if (currentStep === 5) {
+        renderStep5Summary();
+      }
+
+      if (currentStep === 6) {
+        renderStep5Summary();
+      }
+
+
+      // update title for screen readers
+      const stepNameMap = {
+        1: "Ingresa los datos del cotizante",
+        2: "Nuestros Planes", 
+        3: "Para cotizar tu plan",
+        4: "Elige tu plan",
+        5: "Configuración de Coberturas",
+        6: "Resumen y Confirmación"
+      };
+      document.getElementById('modal-title').textContent = stepNameMap[currentStep] || 'Cotiza tu Plan';
+    }
+    
+
+    function nextStep(){
+      // validate step 1 form
+      if (currentStep === 1) {
+        const form = document.getElementById('step-1-form');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+      }
+
+      if (currentStep === 5) {
+        if (!selectedAmbulatoria || !selectedHospitalaria) {
+          showDialogModal("Advertencia", "Debes seleccionar una opción de Cobertura Ambulatoria y una de Hospitalaria para continuar.", [
+            { text: 'Aceptar', actionName: 'closeDialogModal' }
+          ]);
+          return;
+        }
+      }
+
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateProgress();
+        modalEl.scrollTop = 0;
+        updateFocusable();
+      }
+    }
+
+    function prevStep(targetStep = null) {
+      if (targetStep) currentStep = targetStep;
+      else if (currentStep > 1) currentStep--;
+      updateProgress();
+    }
+
+    /* ---------- Plans ---------- */
+    function selectPlan(planName){
+      selectedPlanName = planName;
+      const planDisplay = document.getElementById('selected-plan-name');
+      if (planDisplay) planDisplay.textContent = planName;
+      nextStep();
+    }
+
+    /* ---------- Affiliates ---------- */
+    function renderAffiliates(){
+      const list = document.getElementById('afiliados-list');
+      if (!list) return;
+      if (affiliates.length === 0) {
+        const defaultAge = 18;
+        const defaultNom = '';
+        affiliates.push({ id:1,nom:defaultNom, age:defaultAge, prima: getPrimaByAge(defaultAge) });
+      }
+      const afiliadosCantidad = document.getElementById('afiliados-cantidad');
+      if (afiliadosCantidad) afiliadosCantidad.textContent = affiliates.length;
+      list.innerHTML = '';
+      affiliates.forEach((a, idx) => {
+        const prima = a.prima || getPrimaByAge(a.age);
+        const container = document.createElement('div');
+        container.className = 'd-flex justify-content-between align-items-center mb-2 p-2 rounded-3 border bg-white';
+        container.id = `afiliado-${a.id}`;
+        container.innerHTML = `
+          <div class="d-flex align-items-center gap-2 flex-nowrap">
+            <span class="small text-muted text-nowrap me-2">Afiliado ${idx+1}:</span>
+            <input type="text" class="form-control form-control-sm" placeholder="Nombres"
+                  style="width:160px; min-width:200px" />
+            <input type="number" min="0" max="99" value="${a.age}"
+                  class="form-control form-control-sm"
+                  style="width:64px; min-width:64px"
+                  onchange="updateAffiliateAge(this.value, ${a.id})" />
+            <span class="small text-muted text-nowrap ms-2">años</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="fw-bold" style="color:var(--primary)">${formatCurrency(prima)}</div>
+            <button class="btn btn-link text-danger p-0" onclick="removeAffiliate(${a.id})" aria-label="Eliminar afiliado ${idx+1}">
+              ✖
+            </button>
+          </div>
+        `;
+        list.appendChild(container);
+      });
+    }
+
+    function addAffiliate(){
+      const newId = affiliates.length > 0 ? Math.max(...affiliates.map(x=>x.id)) + 1 : 1;
+      const defaultAge = '';
+      const defaultNom = '';
+      affiliates.push({ id: newId,nom:defaultNom, age: defaultAge, prima: getPrimaByAge(defaultAge) });
+      renderAffiliates();
+      calculateTotalPrima();
+      updateFocusable();
+    }
+
+    function removeAffiliate(id){
+      affiliates = affiliates.filter(x => x.id !== id);
+      renderAffiliates();
+      calculateTotalPrima();
+      updateFocusable();
+    }
+
+    function updateAffiliateAge(newAge, id){
+      const idx = affiliates.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        affiliates[idx].age = parseInt(newAge) || 0;
+        affiliates[idx].prima = getPrimaByAge(newAge);
+      }
+      renderAffiliates();
+      calculateTotalPrima();
+    }
+
+    function calculateTotalPrima(){
+      const titularAgeInput = document.getElementById('titular-age');
+      titularAge = parseInt(titularAgeInput?.value || 33);
+      titularPrimaValue = getPrimaByAge(titularAge) || 135;
+      const titularPrimaSpan = document.getElementById('titular-prima');
+      const titularPrimaSpan2 = document.getElementById('titular-prima-total');
+      if (titularPrimaSpan) titularPrimaSpan.textContent = formatCurrency(titularPrimaValue);
+      if (titularPrimaSpan2) titularPrimaSpan2.textContent = formatCurrency(titularPrimaValue);
+      const titularPrimaDisplay = document.getElementById('titular-prima-display');
+      if (titularPrimaDisplay) titularPrimaDisplay.textContent = formatCurrency(titularPrimaValue);
+
+      let totalPrima = titularPrimaValue;
+      affiliates.forEach(a => totalPrima += (a.prima || getPrimaByAge(a.age)));
+      const totalPrimaDisplay = document.getElementById('total-prima-display');
+      if (totalPrimaDisplay) totalPrimaDisplay.textContent = formatCurrency(totalPrima);
+      return totalPrima;
+    }
+
+    /* ---------- Coberturas ---------- */
+    function selectAmbulatoria(id) {
+      ['A1','A2','A3'].forEach(x => {
+        const el = document.getElementById(x);
+        if (el) el.classList.remove('selected');
+        el.classList.remove('border-success');
+      });
+      const picked = document.getElementById(id);
+      if (picked) {
+        picked.classList.add('selected');
+        picked.classList.add('border-success');
+      }
+      selectedAmbulatoria = id;
+      enableHospitalarias();
+      updateNextButtonState();
+      updateFocusable();
+    }
+
+    function enableHospitalarias(){
+      const section = document.getElementById('hospitalarias-section');
+      const status = document.getElementById('hospitalarias-status');
+      if (section) section.classList.remove('opacity-50');
+      if (status) {
+        status.textContent = '';//'¡Ya puedes configurar!';
+        status.className = 'badge bg-success text-white ms-2';
+      }
+      ['H1','H2','H3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('disabled');
+          el.setAttribute('tabindex','0');
+        }
+      });
+    }
+
+    function selectHospitalaria(id){
+      if (!selectedAmbulatoria) return;
+      ['H1','H2','H3'].forEach(x => {
+        const el = document.getElementById(x);
+        if (el) el.classList.remove('selected');
+        el.classList.remove('border-success');
+      });
+      const picked = document.getElementById(id);
+      if (picked) {
+        picked.classList.add('selected');
+        picked.classList.add('border-success');
+      }
+      selectedHospitalaria = id;
+      updateNextButtonState();
+      updateFocusable();
+    }
+
+    function updateNextButtonState() {
+      const btn = document.getElementById('btn-step-4-next');
+      if (!btn) return;
+      if (currentStep === 4) {
+        btn.disabled = !(selectedAmbulatoria && selectedHospitalaria);
+      }
+    }
+
+    /* ---------- Summary step (5) ---------- */
+    function renderStep5Summary() {
+      const summaryContent = document.getElementById('summary-content');
+      if (!summaryContent) return;
+      const planTitle = `Clínica Stella Maris - ${selectedPlanName} ${selectedAmbulatoria ? '('+selectedAmbulatoria+ (selectedHospitalaria?selectedHospitalaria:'') +')':''}`;
+
+      let html = `
+        <div class="card mb-2"><div class="card-body">
+          <h6 class="fw-bold" style="color:var(--primary)">${planTitle}</h6>
+          <p class="small text-muted mb-0">Resumen del plan y coberturas seleccionadas.</p>
+        </div></div>
+
+        <div class="card mb-2"><div class="card-body">
+          <h6 class="fw-bold">Titular</h6>
+          <div class="row">
+            <div class="col-6"><small class="text-muted">Edad</small><div class="fw-bold">${titularAge} años</div></div>
+            <div class="col-6 text-end"><small class="text-muted">Prima Mensual</small><div class="fw-bold text-success">${formatCurrency(titularPrimaValue)}</div></div>
+          </div>
+          <div class="mt-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="prevStep(2)">Cambiar plan</button>
+            <button class="btn btn-sm btn-primary ms-2" onclick="showDialogModal('Ver Plan', 'Aquí se abriría el documento o PDF del plan completo.', [{text:'Aceptar', actionName:'closeDialogModal'}])">Ver plan</button>
+          </div>
+        </div></div>
+      `;
+
+      if (affiliates.length > 0) {
+        html += `<div class="card mb-2"><div class="card-body"><h6 class="fw-bold">Afiliados Adicionales (${affiliates.length})</h6>`;
+        affiliates.forEach((a,i) => {
+          html += `<div class="p-2 rounded-3 bg-light mb-1">
+            <div class="row">
+              <div class="col-6"><small class="text-muted">Edad</small><div class="fw-bold">${a.age} años</div></div>
+              <div class="col-6 text-end"><small class="text-muted">Prima</small><div class="fw-bold text-success">${formatCurrency(a.prima)}</div></div>
+            </div>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+
+      summaryContent.innerHTML = html;
+      document.getElementById('summary-total-affiliates').textContent = affiliates.length;
+      document.getElementById('summary-total-prima').textContent = formatCurrency(calculateTotalPrima());
+      updateFocusable();
+    }
+
+    /* ---------- Small dialog (reusable) ---------- */
+    function closeDialogModal(){
+      const ex = document.getElementById('custom-dialog-modal');
+      if (ex) ex.remove();
+    }
+
+    function showDialogModal(title, message, buttons = [{text:'Aceptar', actionName:'closeDialogModal'}]) {
+      closeDialogModal();
+      const wrapper = document.createElement('div');
+      wrapper.id = 'custom-dialog-modal';
+      wrapper.className = 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center';
+      wrapper.style.zIndex = 1060;
+      wrapper.innerHTML = `
+        <div style="width:100%;max-width:440px;padding:1rem">
+          <div class="card custom-dialog shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div><h5 class="card-title mb-1">${title}</h5></div>
+                <button type="button" class="btn-close" onclick="closeDialogModal()" aria-label="Cerrar"></button>
+              </div>
+              <p class="text-muted">${message}</p>
+              <div class="d-flex gap-2 mt-2">
+                ${buttons.map((btn, idx) => {
+                  const cls = btn.class || (idx===0 ? 'btn btn-primary' : 'btn btn-secondary');
+                  const actionName = btn.actionName || 'closeDialogModal';
+                  const actionParam = btn.actionParam ? `'${btn.actionParam}'` : '';
+                  return `<button class="${cls} flex-fill" onclick="closeDialogModal(); window['${actionName}'](${actionParam});">${btn.text}</button>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrapper);
+    }
+
+    /* ---------- Confirmation flow (step 5) ---------- */
+    function initiateAffiliationProcess() {
+      showDialogModal("Confirmación de Plan", "¿Deseas afiliarte al plan de salud cotizado?", [
+        { text:'Sí', class:'btn btn-success', actionName:'openPaymentModal' },
+        { text:'No', class:'btn btn-outline-secondary', actionName:'showSaveProspectConfirmation' }
+      ]);
+    }
+
+
+    /* solo para modal de fin 
+    function showPaymentGateway() {
+      showDialogModal("Pasarela de pago", "Procesando la Pasarela de Pago... Serás redirigido al portal de firma de contrato.", [
+        { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+      ]);
+    }
+ */
+    function showSaveProspectConfirmation() {
+      showDialogModal("Guardar Cotización", "¿Desea guardar prospección para continuar más tarde?", [
+        { text:'Sí', class:'btn btn-primary', actionName:'finalizeProspect', actionParam:'true' },
+        { text:'No', class:'btn btn-secondary', actionName:'finalizeProspect', actionParam:'false' }
+      ]);
+    }
+
+    function finalizeProspect(save) {
+      if (save === 'true') {
+        showDialogModal("Prospección Guardada", "Prospección guardada exitosamente. Recibirás un correo con el resumen.", [
+          { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+        ]);
+      } else {
+        showDialogModal("Prospección Descartada", "Prospección descartada. Puedes cotizar de nuevo cuando desees.", [
+          { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
+        ]);
+      }
+    }
+
+    /* ---------- Carousel helpers ---------- */
+    function scrollCarousel(dir) {
+      const el = document.getElementById('plans-carousel');
+      if (!el) return;
+      const amount = el.clientWidth * 0.6;
+      if (dir === 'left') el.scrollBy({ left: -amount, behavior: 'smooth' });
+      else el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    /* Expose functions used inline */
+    window.openModal = openModal;
+    window.toggleModal = openModal;
+    window.nextStep = nextStep;
+    window.prevStep = prevStep;
+    window.selectPlan = selectPlan;
+    window.addAffiliate = addAffiliate;
+    window.removeAffiliate = removeAffiliate;
+    window.updateAffiliateAge = updateAffiliateAge;
+    window.calculateTotalPrima = calculateTotalPrima;
+    window.selectAmbulatoria = selectAmbulatoria;
+    window.selectHospitalaria = selectHospitalaria;
+    window.initiateAffiliationProcess = initiateAffiliationProcess;
+    //window.showPaymentGateway = showPaymentGateway;
+    window.showSaveProspectConfirmation = showSaveProspectConfirmation;
+    window.finalizeProspect = finalizeProspect;
+    window.closeDialogModal = closeDialogModal;
+    window.showDialogModal = showDialogModal;
+    window.scrollCarousel = scrollCarousel;
+    window.openModal2 = openModal2;
+    window.closeModal2 = closeModal2;
+
+    /* ---------- Init ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      updateProgress();
+      renderAffiliates();
+      calculateTotalPrima();
+
+      // Accessibility: when modal opens we must set focus trap; ensure close button accessible
+      //document.getElementById('open-plans').addEventListener('click', openModal);
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      const plansCloseBtn = document.getElementById('plans-modal-close');
+      if (plansCloseBtn) plansCloseBtn.addEventListener('click', closeModal2);
+      const plansBackdropEl = document.getElementById('plans-modal-backdrop');
+      if (plansBackdropEl) plansBackdropEl.addEventListener('mousedown', (e)=>{ if (e.target === plansBackdropEl) closeModal2(); });
+
+      // Keyboard accessible card-option clickable via Enter/Space
+      document.querySelectorAll('.card-option[role="button"]').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
