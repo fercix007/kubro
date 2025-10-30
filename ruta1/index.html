@@ -10,6 +10,7 @@
 
   <!-- Google Font Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root{
@@ -322,46 +323,72 @@
 
         <div class="d-flex justify-content-between mt-3">
           <button class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
-          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 3)</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente</button>
         </div>
       </div>
 
       <div id="step-3" class="step-content d-none">
         <h3 class="h6 fw-bold mb-3"></h3>
 
-        <div class="mb-3 p-2 rounded-3 bg-light border">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div id="selected-plan-name" class="fw-bold">Asistencia Médica por Emergencia Accidental Ambulatoria</div>
-              <small class="text-muted">100% de cobertura en caso de emergencias por accidentes atendidos ambulatoriamente durante las primeras 48 horas de ocurrido.</small>
+        <div class="mb-3 p-2 rounded-3 border d-flex align-items-center" style="border-color:#1ca5db;">
+          <!-- Icono circular -->
+          <div class="me-3 d-flex justify-content-center align-items-center rounded-circle" 
+              style="width:50px; height:50px; background-color:#1ca5db;">
+            <i class="fa-solid fa-kit-medical text-white"></i>
+          </div>
+
+          <!-- Texto -->
+          <div>
+            <div id="selected-plan-name" class="fw-bold text-dark">
+              Asistencia Médica por Emergencia Accidental Ambulatoria
             </div>
+            <small class="text-muted">
+              100% de cobertura en caso de emergencias por accidentes atendidos ambulatoriamente 
+              durante las primeras 48 horas de ocurrido.
+            </small>
           </div>
         </div>
 
+        <div class="mb-3 p-2 rounded-3 border d-flex align-items-center" style="border-color:#1ca5db;">
+          <!-- Icono circular -->
+          <div class="me-3 d-flex justify-content-center align-items-center rounded-circle" 
+              style="width:50px; height:50px; background-color:#1ca5db;">
+            <i class="fa-solid fa-video text-white"></i>
+          </div>
 
-        <div class="mb-3 p-2 rounded-3 bg-light border">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div id="selected-plan-name" class="fw-bold">Atención Médica a Distancia</div>
-              <small class="text-muted">Tendrás a tu disposición atención médica sin moverte de tu casa u oficina para cualquier enfermedad o dolencia de baja complejidad.</small>
+          <!-- Texto -->
+          <div>
+            <div id="selected-plan-name" class="fw-bold text-dark">
+              Atención Médica a Distancia
             </div>
+            <small class="text-muted">
+              Tendrás a tu disposición atención médica sin moverte de tu casa u oficina para cualquier enfermedad o dolencia de baja complejidad.
+            </small>
           </div>
         </div>
 
+        <div class="mb-3 p-2 rounded-3 border d-flex align-items-center" style="border-color:#1ca5db;">
+          <!-- Icono circular -->
+          <div class="me-3 d-flex justify-content-center align-items-center rounded-circle" 
+              style="width:50px; height:50px; background-color:#1ca5db;">
+            <i class="fa-solid fa-baby text-white"></i>
+          </div>
 
-        <div class="mb-3 p-2 rounded-3 bg-light border">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div id="selected-plan-name" class="fw-bold">Atención por Maternidad</div>
-              <small class="text-muted">Inicio de gestación a partir de transcurridos los primeros 12 meses de aseguramiento ya contarás con beneficios para la atención y gastos por maternidad.</small>
+          <!-- Texto -->
+          <div>
+            <div id="selected-plan-name" class="fw-bold text-dark">
+              Atención por Maternidad
             </div>
+            <small class="text-muted">
+              Inicio de gestación a partir de transcurridos los primeros 12 meses de aseguramiento ya contarás con beneficios para la atención y gastos por maternidad.
+            </small>
           </div>
         </div>
-
+        
        
         <div class="d-flex justify-content-between mt-3">
           <button class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
-          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 4)</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente</button>
         </div>
       </div>
 
@@ -423,7 +450,7 @@
 
         <div class="d-flex justify-content-between mt-3">
           <button class="btn btn-light text-muted" onclick="prevStep()">← Volver</button>
-          <button class="btn btn-primary" onclick="nextStep()">Siguiente (Paso 4)</button>
+          <button class="btn btn-primary" onclick="nextStep()">Siguiente</button>
         </div>
       </div>
 
@@ -450,15 +477,15 @@
               <div class="card-body">
                 <h6 class="card-title fw-bold">Datos del Titular: <span style="color:var(--primary); text-transform: uppercase" id="titular-name-2"></span></h6>
                 <div class="row g-2 align-items-end">
-                  <div class="col-6 col-md-3">
-                    <label class="form-label small">Edad del Titular</label>
+                  <div class="col-6 col-md-4">
+                    <label class="form-label small mt-4 fw-bold">Edad del Titular</label>
                     <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
                   </div>
-                  <div class="col-6 col-md-3 text-md-start text-sm-end">
+                  <div class="col-6 col-md-4 text-md-start text-sm-end">
                     <label class="form-label small d-block">&nbsp;</label>
                     <div id="titular-prima-display" class="fw-semibold">S/. 150</div>
                   </div>
-                  <div class="col-6 col-md-3 d-flex justify-content-end">
+                  <div class="col-6 col-md-4 d-flex justify-content-end">
                     <label class="form-label small d-block me-2 d-none d-md-block">&nbsp;</label>
                     <button class="btn btn-primary"><span aria-hidden="true" class="me-1">📄</span>Ver plan</button>
                   </div>
@@ -823,7 +850,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="col-md-4">
                       <label class="form-label small fw-semibold d-block">Numero Documento</label>
-                      <input type="text" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required onchange="autocompleta()">
+                      <input type="number" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required onchange="autocompleta()">
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-semibold d-block">Fecha Ncto.</label>
@@ -1014,114 +1041,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="col-md-4">
                         <label class="form-label small fw-semibold d-block">¿Conoce el DNI del titular?</label>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si" value="si" required>
-                          <label class="form-check-label" for="si">SI</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no" value="no">
-                          <label class="form-check-label" for="no">NO</label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
-                          <select type="text" class="form-control" id="condicion-parentesco" required>
-                            <option value="" selected disabled>Seleccionar</option>
-                            <option value="titular">Titular</option>
-                            <option value="dni">Cónyuge del titular</option>
-                            <option value="ce">Conviviente del titular</option>
-                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
-                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
-                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
-                            <option value="dni">Hijos con discapacidad</option>
-                          </select>
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
-                      <select class="form-select" id="tipo-documento" required>
-                        <option value="" selected disabled>Seleccionar</option>
-                        <option value="dni">DNI</option>
-                        <option value="ce">CE</option>
-                        <option value="pas">Pasaporte</option>
-                        <option value="cui">CUI</option>
-                        <option value="cnv">Codigo Nacido Vivo</option>
-                      </select>
-                    </div>
-                </div>
-                <div class="row g-2 mb-2">
-                  <div class="col-md-4">
-                    <label for="numero-documento" class="form-label small fw-semibold">Numero Documento</label>
-                    <input type="number" class="form-control" id="numero-documento" maxlength="8" autocomplete="off" required>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="fecha-nacimiento" class="form-label small fw-semibold">Fecha Nacimiento</label>
-                    <input type="date" class="form-control" id="fecha-nacimiento" autocomplete="off" required>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="nombres-completos" class="form-label small fw-semibold">Nombres Completos</label>
-                    <input type="text" class="form-control" id="nombres-completos" autocomplete="off" required>
-                  </div>
-                </div>
-            
-              <div class="row g-2 mb-2">
-                <div class="col-md-4">
-                  <label for="apellido-paterno" class="form-label small fw-semibold">Apellido Paterno</label>
-                  <input type="text" class="form-control" id="apellido-paterno" maxlength="8" autocomplete="off" required>
-                </div>
-                <div class="col-md-4">
-                  <label for="apellido-materno" class="form-label small fw-semibold">Apellido Materno</label>
-                  <input type="text" class="form-control" id="apellido-materno" maxlength="8" autocomplete="off" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label small fw-semibold d-block">Genero</label>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino" value="si" required>
-                          <label class="form-check-label" for="masculino">Masculino</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino" value="no">
-                          <label class="form-check-label" for="femenino">Femenino</label>
-                        </div>
-                </div>
-              </div>   
-              </div>
-            </div>
-            <script>
-                  document.addEventListener('DOMContentLoaded', function () {
-                    const si2 = document.getElementById('si_2');
-                    const no2 = document.getElementById('no_2');
-                    if (!si2 || !no2) return;
-
-                    // Solo alerta cuando se selecciona "SI"
-                    si2.addEventListener('change', function () {
-                      if (this.checked) {
-                         document.getElementById("si").value = "si";
-                         document.getElementById("condicion-parentesco").value = "titular";
-                         document.getElementById("tipo-documento").value = "dni";
-                         document.getElementById("numero-documento").value = "45654654";
-                         document.getElementById("fecha-nacimiento").value = "1990-10-28";
-                         document.getElementById("nombres-completos").value = "JUAN CARLOS";
-                         document.getElementById("apellido-paterno").value = "TORRE";
-                         document.getElementById("apellido-materno").value = "TAMAYO";
-                         document.getElementById("masculino").value = "si";
-                      }
-                    });
-
-                    // "NO" no hace nada
-                    // no2.addEventListener('change', function () {});
-                  });
-                  </script>
-            <div class="col-lg-6 col-md-12 mb-3">
-              <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
-                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 2</h5>
-                  <div class="row g-2 mb-2">
-                    <div class="col-md-4">
-                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del Afiliado?</label>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si_2" value="si" required>
+                          <input class="form-check-input" type="radio" name="TipoDocumento_2" id="si_2" value="si" required>
                           <label class="form-check-label" for="si_2">SI</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no_2" value="no">
+                          <input class="form-check-input" type="radio" name="TipoDocumento_2" id="no_2" value="no">
                           <label class="form-check-label" for="no_2">NO</label>
                         </div>
                     </div>
@@ -1129,6 +1053,7 @@ document.addEventListener('DOMContentLoaded', function () {
                           <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
                           <select type="text" class="form-control" id="condicion-parentesco_2" required>
                             <option value="" selected disabled>Seleccionar</option>
+                            <option value="titular">Titular</option>
                             <option value="dni">Cónyuge del titular</option>
                             <option value="ce">Conviviente del titular</option>
                             <option value="dni">Hijos del titular/cónyuge/conviviente</option>
@@ -1182,6 +1107,119 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_2" value="no">
                           <label class="form-check-label" for="femenino_2">Femenino</label>
+                        </div>
+                </div>
+              </div>   
+              </div>
+            </div>
+            <script>
+                  document.addEventListener('DOMContentLoaded', function () {
+                    const si2 = document.getElementById('si');
+                    const no2 = document.getElementById('no');
+                    if (!si2 || !no2) return;
+
+                    // Solo alerta cuando se selecciona "SI"
+                    si2.addEventListener('change', function () {
+                      if (this.checked) {
+                         document.getElementById("si_2").checked  = true;
+                         document.getElementById("condicion-parentesco_2").value = "titular";
+                         document.getElementById("tipo-documento_2").value = "dni";
+                         document.getElementById("numero-documento_2").value = "45654654";
+                         document.getElementById("fecha-nacimiento_2").value = "1990-10-28";
+                         document.getElementById("nombres-completos_2").value = "JUAN CARLOS";
+                         document.getElementById("apellido-paterno_2").value = "TORRE";
+                         document.getElementById("apellido-materno_2").value = "TAMAYO";
+                         document.getElementById("masculino_2").checked  = true;
+                      }else{
+                        document.getElementById("si_2").checked  = false;
+                        document.getElementById("condicion-parentesco_2").value = "";
+                        document.getElementById("tipo-documento_2").value = "";
+                        document.getElementById("numero-documento_2").value = "";
+                        document.getElementById("fecha-nacimiento_2").value = "";
+                        document.getElementById("nombres-completos_2").value = "";
+                        document.getElementById("apellido-paterno_2").value = "";
+                        document.getElementById("apellido-materno_2").value = "";
+                        document.getElementById("masculino_2").checked  = false;
+                        document.getElementById("femenino_2").checked  = false;
+                      }
+                    });
+
+                    // "NO" no hace nada
+                    // no2.addEventListener('change', function () {});
+                  });
+                  </script>
+            <div class="col-lg-6 col-md-12 mb-3">
+              <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
+                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 2</h5>
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold d-block">¿Conoce el DNI del Afiliado?</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="si_3" value="si" required>
+                          <label class="form-check-label" for="si_3">SI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="no_3" value="no">
+                          <label class="form-check-label" for="no_3">NO</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                          <label class="form-label small fw-semibold d-block">Condicion/Parentesco</label>
+                          <select type="text" class="form-control" id="condicion-parentesco_3" required>
+                            <option value="" selected disabled>Seleccionar</option>
+                            <option value="dni">Cónyuge del titular</option>
+                            <option value="ce">Conviviente del titular</option>
+                            <option value="dni">Hijos del titular/cónyuge/conviviente</option>
+                            <option value="dni">Padre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Madre del titular/cónyuge/conviviente</option>
+                            <option value="dni">Hijos con discapacidad</option>
+                          </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-semibold d-block">Tipo Documento</label>
+                      <select class="form-select" id="tipo-documento_3" required>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="pas">Pasaporte</option>
+                        <option value="cui">CUI</option>
+                        <option value="cnv">Codigo Nacido Vivo</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                  <div class="col-md-4">
+                    <label for="numero-documento_3" class="form-label small fw-semibold">Numero Documento</label>
+                    <input type="number" class="form-control" id="numero-documento_3" maxlength="8" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="fecha-nacimiento_3" class="form-label small fw-semibold">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha-nacimiento_3" autocomplete="off" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="nombres-completos_3" class="form-label small fw-semibold">Nombres Completos</label>
+                    <input type="text" class="form-control" id="nombres-completos_3" autocomplete="off" required>
+                  </div>
+                </div>
+            
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <label for="apellido-paterno_3" class="form-label small fw-semibold">Apellido Paterno</label>
+                  <input type="text" class="form-control" id="apellido-paterno_3" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="apellido-materno_3" class="form-label small fw-semibold">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellido-materno_3" maxlength="8" autocomplete="off" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino_3" value="si" required>
+                          <label class="form-check-label" for="masculino_3">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_3" value="no">
+                          <label class="form-check-label" for="femenino_3">Femenino</label>
                         </div>
                 </div>
               </div>   
@@ -1501,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     function updatePaymentTitles() {
       const titleElement = document.getElementById('payment-modal-title');
-      const subtitleElement = document.getElementById('payment-modal-sub');
+      //const subtitleElement = document.getElementById('payment-modal-sub');
       
       const titles = {
         1: {
@@ -1520,7 +1558,7 @@ document.addEventListener('DOMContentLoaded', function () {
       
       const currentTitle = titles[paymentCurrentStep] || { title: '', subtitle: '' };
       titleElement.textContent = currentTitle.title;
-      subtitleElement.textContent = currentTitle.subtitle;
+      //subtitleElement.textContent = currentTitle.subtitle;
     }
     
     function updatePaymentProgress() {
