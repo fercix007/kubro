@@ -41,7 +41,7 @@
           <a href="#" class="nav-link text-white ps-4 sidebar-item" data-tab="tab-step4" onclick="showDetailModal(1001)">Clínica Padre Luis Tezza</a>
         </div>
 
-        <a href="#" class="nav-link text-white d-flex align-items-center rounded sidebar-item mt-auto" data-tab="tab-step6"><i class="fas fa-cog me-3"></i> <span>Personalización</span></a>
+      
       </div>
     </nav>
 
@@ -845,8 +845,8 @@
               <div>
                 <div class="fw-bold mt-3">PLAN</div>
                 <div class="small text-muted mt-3">Edades de los Afiliados</div>
-                <div class="small text-muted mt-3">Titular (25 años)</div>
-                <div class="small text-muted mt-3">Afiliado 1 (20 años)</div>
+                <div class="small text-muted mt-3">Titular (33 años)</div>
+                <div class="small text-muted mt-3">Afiliado 1 (18 años)</div>
               </div>
             </div>
 
@@ -856,8 +856,8 @@
                 <div class="plan-header">Protección Integral Plan Flexible</div>
                 <div class="plan-body">
                   <div class="small text-center mt-3 fw-bold">Aportes Mensuales</div>
+                  <div class="small text-center mt-3 fw-bold">S/ 112</div>
                   <div class="small text-center mt-3 fw-bold">S/ 101</div>
-                  <div class="small text-center mt-3 fw-bold">S/ 100</div>
                   <div class="small text-muted mt-3">
                     <button type="button" class="btn btn-outline-danger btn-sm">Ver Plan</button>
                   </div>
@@ -999,7 +999,7 @@
                     </div>
                     <div class="text-end">
                       <small class="text-muted">Prima Calculada</small>
-                      <div id="titular-prima" class="h6 fw-bold" style="color:var(--primary)">S/. 150</div>
+                      <div id="titular-prima" class="h6 fw-bold" style="color:var(--primary)">S/. 213</div>
                     </div>
                   </div>
                 </div>
@@ -1018,7 +1018,7 @@
                     </div>
                     <div class="col-6 col-md-4 text-md-start text-sm-end">
                       <label class="form-label small d-block">&nbsp;</label>
-                      <div id="titular-prima-display" class="fw-semibold text-center">S/. 155</div>
+                      <div id="titular-prima-display" class="fw-semibold text-center">S/. 112</div>
                     </div>
                     <div class="col-6 col-md-4 d-flex justify-content-end">
                         <label class="form-label small d-block me-2 d-none d-md-block">&nbsp;</label>
@@ -1034,11 +1034,11 @@
         <div class="d-flex justify-content-between align-items-center p-2 rounded-3 bg-light summary-box border mt-3">
           <div>
             <div class="small text-muted">Total en la Cotización</div>
-            <div class="fw-bold">Afiliados: <span id="summary-total-affiliates">1</span></div>
+            <div class="fw-bold">Afiliados: <span id="summary-total-affiliates">2</span></div>
           </div>
           <div class="text-end">
             <div class="small text-muted">Aporte Total Mensual</div>
-            <div id="titular-prima-total" class="h5 fw-bold" style="color:var(--primary)">S/. 150</div>
+            <div id="titular-prima-total" class="h5 fw-bold" style="color:var(--primary)">S/. 213</div>
           </div>
         </div>
 
@@ -1853,14 +1853,45 @@ document.addEventListener('DOMContentLoaded', function () {
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 id="paymentGatewayModalLabel" class="modal-title">Pasarela de Pago</h5>
+        <h5 id="paymentGatewayModalLabel" class="modal-title">Genera Link de Pago</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
-        <div class="text-center"><img src="pasarella.jpg" alt=""></div>
+        <!-- Link de Pago -->
+        <div class="row align-items-center mb-3">
+          <div class="col-12 col-md-8">
+            <label for="paymentLink1" class="form-label">Link de Pago</label>
+            <input type="text" class="form-control" id="paymentLink1" value="https://www.pagos.com/tu-link-de-pago" readonly>
+          </div>
+          <div class="col-12 col-md-4 d-flex justify-content-center mt-2 mt-md-4">
+            <button id="copyLinkBtn" class="btn btn-info" onclick="copyPaymentLink()"><i class="fas fa-copy"></i>Copiar</button>
+          </div>
+        </div>
+
+        <!-- Enviar por Whatsapp -->
+        <div class="row align-items-center mb-3">
+          <div class="col-12 col-md-8">
+            <label for="paymentLink2" class="form-label">Enviar por Whatsapp</label>
+            <input type="text" class="form-control" id="paymentLink2" value="951357852" readonly>
+          </div>
+          <div class="col-12 col-md-4 d-flex justify-content-center mt-2 mt-md-4">
+            <button class="btn btn-success"><i class="fab fa-whatsapp"></i> Enviar</button>
+          </div>
+        </div>
+
+        <!-- Enviar por Correo -->
+        <div class="row align-items-center mb-3">
+          <div class="col-12 col-md-8">
+            <label for="paymentLink3" class="form-label">Enviar por Correo</label>
+            <input type="text" class="form-control" id="paymentLink3" value="daniel@gmail.com" readonly>
+          </div>
+          <div class="col-12 col-md-4 d-flex justify-content-center mt-2 mt-md-4">
+            <button class="btn btn-primary" onclick="copyPaymentLink()"><i class="fas fa-envelope"></i> Enviar</button>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button id="payConfirmBtn" type="button" class="btn btn-success">Pagar</button>
+        <button id="payConfirmBtn" type="button" class="btn btn-danger">Cerrar</button>
       </div>
     </div>
   </div>
@@ -2360,8 +2391,8 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = `
           <div class="d-flex align-items-center gap-2 flex-nowrap">
             <span class="small text-muted text-nowrap me-2">Afiliado ${idx+1}:</span>
-            <input type="text" class="form-control form-control-sm" placeholder="Nombres"
-                  style="width:160px; min-width:200px" />
+            <input type="text" class="form-control form-control-sm" placeholder="Nombres" value="${a.nom || ''}"
+                  style="width:160px; min-width:200px" onchange="updateAffiliateName(this.value, ${a.id})" />
             <input type="number" min="0" max="99" value="${a.age}"
                   class="form-control form-control-sm"
                   style="width:64px; min-width:64px"
@@ -2372,6 +2403,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="fw-bold" style="color:var(--primary)">${formatCurrency(prima)}</div>
             <button class="btn btn-link text-danger p-0" onclick="removeAffiliate(${a.id})" aria-label="Eliminar afiliado ${idx+1}">
               ✖
+              
             </button>
           </div>
         `;
@@ -2394,6 +2426,13 @@ document.addEventListener('DOMContentLoaded', function () {
       renderAffiliates();
       calculateTotalPrima();
       updateFocusable();
+    }
+
+    function updateAffiliateName(newName, id){
+      const idx = affiliates.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        affiliates[idx].nom = newName;
+      }
     }
 
     function updateAffiliateAge(newAge, id){
