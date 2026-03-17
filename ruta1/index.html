@@ -1548,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(() => {
         mensaje.remove();
         // Redirigir a la página principal
-        window.location.href = 'pagoExito.html';
+        window.location.href = 'pagoExitoso.html';
       }, 600);
     }, 4000);
   }
@@ -2299,19 +2299,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
  */
     function showSaveProspectConfirmation() {
-      showDialogModal("Guardar Cotización", "¿Desea guardar prospección para continuar más tarde?", [
-        { text:'Sí', class:'btn btn-primary', actionName:'finalizeProspect', actionParam:'true' },
+      showDialogModal("Gracias por visitarnos", "Si deseas más información, bríndanos tus datos<br><br>" +
+      "<label>Nombres y Apellidos</label><input type='text' class='form-control form-control-sm' placeholder='Ingresa tu Nombre'>"+ 
+      "<label>Teléfono</label><input type='text' class='form-control form-control-sm' placeholder='Ingresa tu Teléfono'>"+
+      "<label>Correo Electrónico</label><input type='email' class='form-control form-control-sm' placeholder='Ingresa tu Correo'><br>"+
+      "<div class='bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2'>"+"<div class='form-check form-switch'><input class='form-check-input termino_2' type='checkbox' role='switch' id='flexSwitchCheckDefault'>"+
+                  "<label class='form-check-label' for='flexSwitchCheckDefault'>Acepto las condiciones y autorizo el tratamiento de mis datos personales, incluyendo el envío de información comercial.</label>"+
+                "</div>"+
+      "</div>"+
+      "<div class='bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2'>"+"<div class='form-check form-switch'><input class='form-check-input termino_2' type='checkbox' role='switch' id='flexSwitchCheckDefault'>"+
+                  "<label class='form-check-label' for='flexSwitchCheckDefault'>Autorizo el tratamiento de mis datos personales para recibir comunicaciones comerciales, ofertas y promociones personalizadas a través de correo electrónico, whatsapp o SMS</label>"+
+                "</div>"+
+      "</div>", [
+        { text:'Enviar', class:'btn btn-primary', actionName:'finalizeProspect', actionParam:'true' },
         { text:'No', class:'btn btn-secondary', actionName:'finalizeProspect', actionParam:'false' }
       ]);
     }
 
     function finalizeProspect(save) {
       if (save === 'true') {
-        showDialogModal("Prospección Guardada", "Prospección guardada exitosamente. Recibirás un correo con el resumen.", [
+        showDialogModal("Gracias por escribirnos", "nos pondremos en contacto con usted", [
           { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
         ]);
       } else {
-        showDialogModal("Prospección Descartada", "Prospección descartada. Puedes cotizar de nuevo cuando desees.", [
+        showDialogModal("Gracias", "Puedes cotizar de nuevo cuando desees.", [
           { text:'Aceptar', class:'btn btn-primary', actionName:'closeDialogModal' }
         ]);
       }
