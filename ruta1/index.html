@@ -418,16 +418,17 @@
       <div class="card-body">
         <h6 class="card-title fw-bold">Datos del Titular: <span style="color:var(--primary); text-transform: uppercase" id="titular-name"></span></h6>
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-4">
+          <div class="col-4 col-md-4">
             <label class="form-label small">Edad del Titular</label>
             <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
           </div>
-          <div class="col-6 col-md-4 text-md-start text-sm-end">
+          <div class="col-2 col-md-2 text-md-start text-sm-end">
             <label class="form-label small d-block">&nbsp;</label>
             <div id="titular-prima-display" class="fw-semibold text-center">S/. 155</div>
           </div>
-          <div class="col-6 col-md-4 d-flex justify-content-end">
+          <div class="col-6 col-md-6 d-flex justify-content-end">
                <label class="form-label small d-block me-2 d-none d-md-block">&nbsp;</label>
+               <button class="btn btn-success" onclick="showPlansModal()"><span aria-hidden="true" class="me-1">📄</span>Cambiar plan</button>
                <button class="btn btn-primary"><span aria-hidden="true" class="me-1">📄</span>Ver plan</button>
           </div>
         </div>
@@ -477,15 +478,15 @@
               <div class="card-body">
                 <h6 class="card-title fw-bold">Datos del Titular: <span style="color:var(--primary); text-transform: uppercase" id="titular-name-2"></span></h6>
                 <div class="row g-2 align-items-end">
-                  <div class="col-6 col-md-4">
+                  <div class="col-4 col-md-4">
                     <label class="form-label small mt-4 fw-bold">Edad del Titular</label>
                     <input id="titular-age" type="number" class="form-control" min="18" max="99" value="33" onchange="calculateTotalPrima()">
                   </div>
-                  <div class="col-6 col-md-4 text-md-start text-sm-end">
+                  <div class="col-2 col-md-2 text-md-start text-sm-end">
                     <label class="form-label small d-block">&nbsp;</label>
                     <div id="titular-prima-display" class="fw-semibold">S/. 150</div>
                   </div>
-                  <div class="col-6 col-md-4 d-flex justify-content-end">
+                  <div class="col-6 col-md-6 d-flex justify-content-end">
                     <label class="form-label small d-block me-2 d-none d-md-block">&nbsp;</label>
                     <button class="btn btn-primary"><span aria-hidden="true" class="me-1">📄</span>Ver plan</button>
                   </div>
@@ -759,7 +760,14 @@ function autocompleta(){
     document.getElementById("apellido_paterno").value = "TORRE";
     document.getElementById("apellido_materno").value = "TAMAYO";
     document.getElementById("nombres").value = "JUAN CARLOS";
+    document.getElementById("masculino_0").checked = true;
 }
+
+function autocompleta_nr(){
+    document.getElementById("nombre_razon_social").value = "NOMBRE O RAZON SOCIAL";
+
+}
+
 </script>
 
 <script>
@@ -858,18 +866,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
           </div>
           <div class="row g-2 mb-2">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="edad-contratante" class="form-label small fw-semibold">Ap.Paterno</label>
               <input type="text" class="form-control" id="apellido_paterno" autocomplete="off" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="edad-contratante" class="form-label small fw-semibold">Ap.Materno</label>
               <input type="text" class="form-control" id="apellido_materno" autocomplete="off" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="edad-contratante" class="form-label small fw-semibold">Nombres</label>
               <input type="text" class="form-control" id="nombres" autocomplete="off" required>
             </div>
+            <div class="col-md-3">
+                  <label class="form-label small fw-semibold d-block">Genero</label>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="Genero" id="masculino_0">
+                          <label class="form-check-label" for="masculino_0">Masculino</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="Genero" id="femenino_0">
+                          <label class="form-check-label" for="femenino_0">Femenino</label>
+                        </div>
+                </div>
           </div>
           <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
                 <div class="form-check form-switch">
@@ -975,10 +994,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="col-md-6">
                   <label for="edad-contratante" class="form-label small fw-semibold">DOC/RUC</label>
-                  <input type="number" class="form-control" id="doc-ruc" maxlength="11" autocomplete="off" required>
+                  <input type="number" class="form-control" id="doc-ruc" maxlength="11" autocomplete="off"  onchange="autocompleta_nr()" required>
+                </div>
+                <div class="row g-2 mb-2">
+                <div class="col-md-12">
+                  <label for="nombre_razon_social" class="form-label small fw-semibold">Nombre/Razón Social</label>
+                  <input type="text" class="form-control" id="nombre_razon_social" autocomplete="off" required>
                 </div>
               </div>
+
+
+              </div>
+              
+
+            </div>
+
+            <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border mt-2">
               <div class="row g-2 mb-2">
+                <h5 class="h6 fw-bold mb-1 text-primary">Información de Contacto</h5>
                 <div class="col-md-6">
                   <label for="email" class="form-label small fw-semibold">Correo</label>
                   <input type="email" class="form-control" id="email" autocomplete="off" required>
@@ -998,13 +1031,21 @@ document.addEventListener('DOMContentLoaded', function () {
                   <input type="number" class="form-control" id="telefono_2" autocomplete="off" >
                 </div>
               </div>
-              <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+              
+            </div>
+
+            <div class="bg-danger p-2 text-dark bg-opacity-10 rounded-3 border mt-2 mb-2">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Acepto y autorizo el tratamiento de mis datos personales y remisión de información sobre productos o servicios conforme a las condiciones adjuntas.</label>
                 </div>
               </div>
-            </div>
+
+
+
+
+
+
           </div>
         </div>
 
@@ -1101,11 +1142,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="col-md-4">
                   <label class="form-label small fw-semibold d-block">Genero</label>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino_2" value="si" required>
+                          <input class="form-check-input" type="radio" name="genero_2" id="masculino_2" value="si" required>
                           <label class="form-check-label" for="masculino_2">Masculino</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_2" value="no">
+                          <input class="form-check-input" type="radio" name="genero_2" id="femenino_2" value="no">
                           <label class="form-check-label" for="femenino_2">Femenino</label>
                         </div>
                 </div>
@@ -1150,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   </script>
             <div class="col-lg-6 col-md-12 mb-3">
               <div id="datos_contratante_2" class="p-4 rounded-3 bg-light border">
-                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 2</h5>
+                <h5 class="h6 fw-bold mb-3 text-primary">Afiliado 1</h5>
                   <div class="row g-2 mb-2">
                     <div class="col-md-4">
                         <label class="form-label small fw-semibold d-block">¿Conoce el DNI del Afiliado?</label>
@@ -1214,13 +1255,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="col-md-4">
                   <label class="form-label small fw-semibold d-block">Genero</label>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="masculino_3" value="si" required>
+                          <input class="form-check-input" type="radio" name="genero_4" id="masculino_3" value="si" required>
                           <label class="form-check-label" for="masculino_3">Masculino</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="TipoDocumento" id="femenino_3" value="no">
+                          <input class="form-check-input" type="radio" name="genero_4" id="femenino_3" value="no">
                           <label class="form-check-label" for="femenino_3">Femenino</label>
                         </div>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end">
+                        <button type="button" class="btn btn-link p-0 me-3 text-danger" aria-label="Eliminar" title="Eliminar">
+                            <i class="fas fa-trash-alt" style="font-size: 1.2rem;"></i>
+                        </button>
+                        <button type="button" class="btn btn-link p-0 text-info" aria-label="Limpiar" title="Limpiar">
+                           <i class="fas fa-broom" style="font-size: 1.2rem;"></i>
+                        </button>
                 </div>
               </div>   
               </div>
@@ -1348,6 +1397,12 @@ document.addEventListener('DOMContentLoaded', function () {
                   <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
                 </div>
       </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Autorizo el tratamiento de mis datos personales para recibir comunicaciones comerciales, ofertas y promociones personalizadas a través de correo electrónico, whatsapp o SMS</label>
+                </div>
+      </div>
     </div>
 
     <!-- 🟩 Anual -->
@@ -1380,6 +1435,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="form-check form-switch">
                   <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
                   <label class="form-check-label" for="flexSwitchCheckDefault">He leído y acepto los Términos y Condiciones del uso de los medios de pago”. Al encender el switch se muestran las condiciones en un modal</label>
+                </div>
+      </div>
+      <div class="bg-warning p-2 text-dark bg-opacity-10 rounded-3 border  mb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input termino_2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Autorizo el tratamiento de mis datos personales para recibir comunicaciones comerciales, ofertas y promociones personalizadas a través de correo electrónico, whatsapp o SMS</label>
                 </div>
       </div>
 
@@ -1487,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(() => {
         mensaje.remove();
         // Redirigir a la página principal
-        window.location.href = 'index.html';
+        window.location.href = 'pagoExito.html';
       }, 600);
     }, 4000);
   }
@@ -2312,5 +2373,152 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   </script>
+<style>
+        .plan-card {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+          }
+          .plan-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          }
+
+          /* Cabeceras personalizadas */
+          .plan-header {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+
+          /* Colores distintos para cada plan */
+          .plan-flex .plan-header {
+            background-color: #007bff; /* Azul */
+          }
+          .plan-senior .plan-header {
+            background-color: #0d9488; /* Verde azulado */
+          }
+          .plan-plus .plan-header {
+            background-color: #d97706; /* Ámbar */
+          }
+
+          /* Cuerpo de la card */
+          .plan-body {
+            background-color: #ffffff;
+            padding: 10px 15px 15px;
+          }
+
+          /* Plan activo */
+          .plan-card.active {
+            border: 4px solid #1ca5db;
+            box-shadow: 0 0 10px rgba(28,165,219,0.3);
+          }
+      </style>
+<!-- Modal de Planes -->
+  <div class="modal fade" id="plansModal" tabindex="-1" aria-labelledby="plansModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content" style="width: 100%;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="plansModalLabel">
+            <i class="fas fa-shield-alt me-2"></i>Selecciona tu Plan
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 10px !important; display: flex;flex-direction: column;">
+
+          <div class="plan-card plan-flex" style="width: 100% !important;max-width: 100% !important;">
+                <div class="plan-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="card-title mb-0 fw-bold">Protección Integral Plan Flexible</h6>
+                    <h6 class="card-title mb-0 fw-bold">S/ 150.00</h6>
+                  </div>
+                </div>
+                <div class="plan-body">
+                   <ul class="list-unstyled mb-3">
+                <li><i class="fas fa-check-circle me-2"></i>Cobertura médica completa</li>
+                <li><i class="fas fa-check-circle me-2"></i>Flexibilidad de pago</li>
+                <li><i class="fas fa-check-circle me-2"></i>Acceso a redes de clínicas</li>
+                <li><i class="fas fa-check-circle me-2"></i>Beneficios adicionales</li>
+              </ul>
+              <button type="button" class="btn btn-success btn-sm" onclick="selectPlan('Plan Flexible')">Seleccionar</button>
+              <button type="button" class="btn btn-danger btn-sm">Ver Plan</button>
+                </div>
+           </div>
+
+
+          <div class="plan-card plan-senior mt-2" style="width: 100% !important;max-width: 100% !important;">
+                <div class="plan-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="card-title mb-0 fw-bold me-3">Protección Integral Plan Tercera Edad</h6>
+                    <h6 class="card-title mb-0 fw-bold">S/ 250.00</h6>
+                  </div>
+                </div>
+                <div class="plan-body">
+                 <ul class="list-unstyled mb-3">
+                    <li><i class="fas fa-check-circle me-2"></i>Cobertura premium ilimitada</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Acceso VIP a especialistas</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Sin copagos</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Servicios exclusivos</li>
+                  </ul>
+                  <button type="button" class="btn btn-success btn-sm" onclick="selectPlan('Plan Tercera Edad')">Seleccionar</button>
+                  <button type="button" class="btn btn-danger btn-sm">Ver Plan</button>
+                  </div>
+                </div>
+
+
+          <div class="plan-card plan-plus mt-2" style="width: 100% !important;max-width: 100% !important;">
+                <div class="plan-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="card-title mb-0 fw-bold me-3">Protección Integral Plan Plus</h6>
+                    <h6 class="card-title mb-0 fw-bold">S/ 350.00</h6>
+                  </div>
+                </div>
+                <div class="plan-body">
+                    <ul class="list-unstyled mb-3">
+                    <li><i class="fas fa-check-circle me-2"></i>Cobertura premium ilimitada</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Acceso VIP a especialistas</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Sin copagos</li>
+                    <li><i class="fas fa-check-circle me-2"></i>Servicios exclusivos</li>
+                  </ul>
+                  <button type="button" class="btn btn-success btn-sm" onclick="selectPlan('Plan Plus')">Seleccionar</button>
+                  <button type="button" class="btn btn-danger btn-sm">Ver Plan</button>
+                </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function showPlansModal() {
+      const modal = new bootstrap.Modal(document.getElementById('plansModal'));
+      modal.show();
+    }
+
+    function selectPlan(planName) {
+      // Actualizar el nombre del plan seleccionado
+      document.getElementById('selected-plan-name').textContent = 'Protección Integral ' + planName;
+      
+      // Cerrar el modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('plansModal'));
+      modal.hide();
+      
+      // Recalcular prima según el plan
+      calculateTotalPrima();
+    }
+  </script>
+
+
 </body>
 </html>
